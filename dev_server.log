@@ -1,0 +1,22 @@
+
+> sau-il-moro@1.0.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 558ms
+
+ GET / 200 in 1209ms (next.js: 535ms, application-code: 674ms)
+[browser] Image with src "/images/ferro.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/images/ferro.png" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative.
+ GET /products/1 200 in 805ms (next.js: 622ms, application-code: 183ms)
+[browser] Image with src "/images/ferro.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/ferro.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /checkout 200 in 66ms (next.js: 27ms, application-code: 39ms)
+ GET / 200 in 79ms (next.js: 4ms, application-code: 75ms)
+[browser] Image with src "/images/ferro.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/images/ferro.png" has "fill" and parent element with invalid "position". Provided "static" should be one of absolute,fixed,relative.
+ GET /account 200 in 242ms (next.js: 39ms, application-code: 203ms)
+[?25h

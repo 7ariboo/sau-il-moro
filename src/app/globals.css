@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), serif;
+
+  --color-brand-rust: #b34624;
+  --color-deep-black: #0A0A0A;
+  --color-pure-white: #FFFFFF;
+}
+
+:root {
+  --background: #f4f4f2;
+  --foreground: #0a0a0a;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.bg-stone-texture {
+  background-color: #f4f4f2;
+  background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+  background-attachment: fixed;
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .clip-diagonal-header {
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+
+  .clip-diagonal-reverse {
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+  }
+}
