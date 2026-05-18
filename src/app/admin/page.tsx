@@ -7,9 +7,9 @@ import Image from 'next/image';
 import { AddProductModal } from '@/components/AddProductModal';
 import { EditProductModal } from '@/components/EditProductModal';
 import { AddDiscountModal } from '@/components/AddDiscountModal';
-import { Product, Order, DiscountCode } from '@/lib/types';
+import { Product, Order, DiscountCode, IntegrationSettings } from '@/lib/types';
 
-type AdminTab = 'overview' | 'products' | 'orders' | 'customers' | 'newsletter' | 'discounts';
+type AdminTab = 'overview' | 'products' | 'orders' | 'customers' | 'newsletter' | 'discounts' | 'settings';
 
 export default function AdminPage() {
   const { user, isLoading } = useAuth();
@@ -87,6 +87,8 @@ function Dashboard({
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [discounts, setDiscounts] = useState<DiscountCode[]>([]);
+  const [settings, setSettings] = useState<IntegrationSettings | null>(null);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [search, setSearch] = useState('');
   const { logout } = useAuth();
 
@@ -94,6 +96,7 @@ function Dashboard({
     fetch('/api/products?limit=100').then(r => r.json()).then(d => d.success && setProducts(d.data));
     fetch('/api/orders').then(r => r.json()).then(d => d.success && setOrders(d.data));
     fetch('/api/discounts').then(r => r.json()).then(d => d.success && setDiscounts(d.data));
+    fetch('/api/settings').then(r => r.json()).then(d => d.success && setSettings(d.data));
   }, [refreshKey]);
 
   const handleDeleteProduct = async (id: string) => {
@@ -129,6 +132,25 @@ function Dashboard({
     }
   };
 
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!settings) return;
+    setIsSavingSettings(true);
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+      if (res.ok) alert('Impostazioni salvate con successo!');
+      else alert('Errore durante il salvataggio.');
+    } catch {
+      alert('Errore di connessione.');
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 
     p.category.toLowerCase().includes(search.toLowerCase())
@@ -141,6 +163,7 @@ function Dashboard({
     { key: 'customers', label: 'Clienti', icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
     { key: 'newsletter', label: 'Newsletter', icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> },
     { key: 'discounts', label: 'Sconti', icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 15l-3.5-3.5"/><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M22 12A10 10 0 1 1 12 2a10 10 0 0 1 10 10Z"/><path d="m15 9-3.5 3.5"/></svg> },
+    { key: 'settings', label: 'Impostazioni', icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> },
   ];
 
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
@@ -437,6 +460,120 @@ function Dashboard({
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+        {/* Settings Tab */}
+        {tab === 'settings' && settings && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-display text-white uppercase">Impostazioni & API</h1>
+                <p className="text-white/30 text-xs uppercase tracking-widest mt-1">Configura pagamenti, marketing e tracciamento</p>
+              </div>
+              <ButtonCustom size="sm" onClick={handleSaveSettings} disabled={isSavingSettings}>
+                {isSavingSettings ? 'Salvataggio...' : 'Salva Modifiche'}
+              </ButtonCustom>
+            </div>
+
+            <div className="space-y-6">
+              {/* Pagamenti */}
+              <div className="bg-[#161616] border border-white/5 rounded-xl p-6 space-y-4">
+                <h2 className="text-lg font-display text-white uppercase tracking-widest border-b border-white/5 pb-2 mb-4">Pagamenti (Stripe & PayPal)</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Stripe Public Key</label>
+                    <input 
+                      type="text" 
+                      value={settings.stripePublicKey}
+                      onChange={(e) => setSettings({...settings, stripePublicKey: e.target.value})}
+                      placeholder="pk_test_..."
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Stripe Secret Key</label>
+                    <input 
+                      type="password" 
+                      value={settings.stripeSecretKey}
+                      onChange={(e) => setSettings({...settings, stripeSecretKey: e.target.value})}
+                      placeholder="sk_test_..."
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">PayPal Client ID</label>
+                    <input 
+                      type="text" 
+                      value={settings.paypalClientId}
+                      onChange={(e) => setSettings({...settings, paypalClientId: e.target.value})}
+                      placeholder="AdX_..."
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Marketing */}
+              <div className="bg-[#161616] border border-white/5 rounded-xl p-6 space-y-4">
+                <h2 className="text-lg font-display text-white uppercase tracking-widest border-b border-white/5 pb-2 mb-4">Email Marketing</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Mailchimp API Key</label>
+                    <input 
+                      type="text" 
+                      value={settings.mailchimpApiKey}
+                      onChange={(e) => setSettings({...settings, mailchimpApiKey: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Mailchimp List ID</label>
+                    <input 
+                      type="text" 
+                      value={settings.mailchimpListId}
+                      onChange={(e) => setSettings({...settings, mailchimpListId: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Brevo (Sendinblue) API Key</label>
+                    <input 
+                      type="text" 
+                      value={settings.brevoApiKey}
+                      onChange={(e) => setSettings({...settings, brevoApiKey: e.target.value})}
+                      placeholder="xkeysib-..."
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Tracciamento */}
+              <div className="bg-[#161616] border border-white/5 rounded-xl p-6 space-y-4">
+                <h2 className="text-lg font-display text-white uppercase tracking-widest border-b border-white/5 pb-2 mb-4">Analytics & Tracking</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Meta (Facebook) Pixel ID</label>
+                    <input 
+                      type="text" 
+                      value={settings.metaPixelId}
+                      onChange={(e) => setSettings({...settings, metaPixelId: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-white/30">Google Analytics ID (GA4)</label>
+                    <input 
+                      type="text" 
+                      value={settings.googleAnalyticsId}
+                      onChange={(e) => setSettings({...settings, googleAnalyticsId: e.target.value})}
+                      placeholder="G-..."
+                      className="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:outline-none focus:border-brand-rust" 
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

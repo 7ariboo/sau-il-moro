@@ -94,3 +94,14 @@ export interface Address {
   zip: string;
   isDefault: boolean;
 }
+
+export interface IntegrationSettings {
+  stripePublicKey: string;
+  stripeSecretKey: string;
+  paypalClientId: string;
+  mailchimpApiKey: string;
+  mailchimpListId: string;
+  brevoApiKey: string;
+  metaPixelId: string;
+  googleAnalyticsId: string;
+}

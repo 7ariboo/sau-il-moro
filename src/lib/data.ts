@@ -128,6 +128,26 @@ export function deleteDiscountCode(code: string) {
   return null;
 }
 
+// ─── Settings ──────────────────────────────────────────────────────────
+
+import { IntegrationSettings } from './types';
+
+export let INTEGRATION_SETTINGS: IntegrationSettings = {
+  stripePublicKey: '',
+  stripeSecretKey: '',
+  paypalClientId: '',
+  mailchimpApiKey: '',
+  mailchimpListId: '',
+  brevoApiKey: '',
+  metaPixelId: '',
+  googleAnalyticsId: '',
+};
+
+export function updateIntegrationSettings(newSettings: Partial<IntegrationSettings>) {
+  INTEGRATION_SETTINGS = { ...INTEGRATION_SETTINGS, ...newSettings };
+  return INTEGRATION_SETTINGS;
+}
+
 // ─── Helpers ───────────────────────────────────────────────────────────
 
 export function getProductById(id: string): Product | undefined {
