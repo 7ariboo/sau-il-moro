@@ -40,39 +40,76 @@ export default function Home() {
     <main className="min-h-screen bg-stone-texture">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative h-[90vh] w-full flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0a00] via-[#2d1408] to-[#0a0a0a]" />
-        <div className="absolute inset-0 opacity-30">
+      {/* Hero Section — responsive: mobile portrait / desktop landscape */}
+      <section
+        className="relative w-full overflow-hidden"
+        style={{ marginTop: '100px' }}
+      >
+        {/* ── DESKTOP: home.png landscape ── */}
+        <Image
+          src="/images/home.png"
+          alt="Sau Il Moro Hero"
+          width={2558}
+          height={1148}
+          priority
+          className="w-full h-auto block hidden md:block"
+          style={{ marginTop: '-12%' }}
+        />
+        {/* Pulsante desktop — in alto a destra */}
+        <button
+          className="hidden md:block absolute font-display font-bold uppercase text-white transition-all hover:scale-105 hover:brightness-110"
+          style={{
+            top: '18%', right: '5%',
+            backgroundColor: '#b34624',
+            borderRadius: '9999px',
+            padding: 'clamp(8px, 1.2vw, 14px) clamp(18px, 2.8vw, 36px)',
+            fontSize: 'clamp(0.75rem, 1.5vw, 1.15rem)',
+            letterSpacing: '0.06em',
+            border: 'none', cursor: 'pointer',
+            boxShadow: '0 4px 20px rgba(179,70,36,0.5)',
+          }}
+        >
+          CHI SONO?
+        </button>
+
+        {/* ── MOBILE: home-mobile.png portrait + overlay HTML ── */}
+        <div className="relative block md:hidden">
           <Image
-            src="/images/ferro.png"
+            src="/images/home-mobile.png"
             alt="Sau Il Moro Hero"
-            fill
+            width={1024}
+            height={1024}
             priority
-            className="object-cover"
+            className="w-full h-auto block"
           />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <p className="text-brand-rust text-sm font-bold uppercase tracking-[0.4em] mb-6 animate-fade-in">
-              Artigianato Sardo di Lusso
+          {/* Testo + pulsante sovrapposti sulla zona scura in basso */}
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-8 px-6"
+            style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)', paddingTop: '60px' }}
+          >
+            <p className="font-display font-bold uppercase text-white text-center mb-1" style={{ fontSize: 'clamp(1.1rem, 5vw, 1.5rem)', letterSpacing: '0.03em' }}>
+              SCOPRI la sardegna
             </p>
-            <h1 className="text-pure-white text-5xl md:text-7xl lg:text-8xl font-display leading-[0.9] mb-8 uppercase">
-              SCOPRI la sardegna <br />
-              di <span className="text-brand-rust">SAU IL MORO</span>
-            </h1>
-            <p className="text-pure-white/70 text-lg md:text-xl italic mb-12 max-w-lg">
+            <p className="font-display font-bold uppercase text-white text-center mb-2" style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', letterSpacing: '0.02em' }}>
+              DI SAU IL MORO
+            </p>
+            <p className="text-white/70 italic text-center mb-5" style={{ fontSize: 'clamp(0.8rem, 3.5vw, 1rem)' }}>
               dalla sardegna a casa tua
             </p>
-            <ButtonCustom variant="primary" size="lg" className="rounded-sm">
+            <button
+              className="font-display font-bold uppercase text-white transition-all active:scale-95"
+              style={{
+                backgroundColor: '#b34624',
+                borderRadius: '9999px',
+                padding: '12px 36px',
+                fontSize: 'clamp(0.85rem, 4vw, 1rem)',
+                letterSpacing: '0.06em',
+                border: 'none', cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(179,70,36,0.6)',
+              }}
+            >
               CHI SONO?
-            </ButtonCustom>
+            </button>
           </div>
-        </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-pure-white/40">
-          <span className="text-[10px] tracking-[0.3em] uppercase">Scorri</span>
-          <div className="w-px h-12 bg-gradient-to-b from-pure-white/40 to-transparent animate-pulse" />
         </div>
       </section>
 

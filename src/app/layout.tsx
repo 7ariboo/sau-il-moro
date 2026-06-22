@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Stardos_Stencil, Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 
-const stardos = Stardos_Stencil({
-  weight: ['400', '700'],
-  subsets: ["latin"],
+const natronDisplay = localFont({
+  src: "../../public/fonts/NATRONRough-Bold.otf",
   variable: "--font-display",
+  display: "swap",
 });
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
+const natronSans = localFont({
+  src: "../../public/fonts/NATRONRough-Medium.otf",
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it">
-      <body className={`${stardos.variable} ${montserrat.variable} font-sans antialiased text-deep-black bg-stone-texture`}>
+      <body className={`${natronDisplay.variable} ${natronSans.variable} font-sans antialiased text-deep-black bg-stone-texture`}>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
