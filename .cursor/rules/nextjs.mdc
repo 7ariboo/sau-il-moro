@@ -1,0 +1,26 @@
+---
+description: Apply this rule when working with Next.js App Router routing, caching, and navigation.
+globs: "src/app/**/*, src/lib/**/*"
+---
+# Next.js 16 (Canary) Development Rules
+
+This repository uses Next.js 16.2.6. Be aware of the following new features and architectural guidelines:
+
+## 1. Caching with `'use cache'`
+- To cache slow data fetches or components, include `'use cache'` directive at the top of the function.
+- Example:
+  ```tsx
+  async function getProduct(slug: string) {
+    'use cache'
+    return await db.query(slug)
+  }
+  ```
+
+## 2. Instant Navigations (`unstable_instant`)
+- Export `export const unstable_instant = { prefetch: 'static' }` from page/layout files that should render instantly.
+- Wrap all uncached, dynamic, or promise-awaiting component renders in `<Suspense>` boundaries. If a component reads a dynamic prop (e.g. dynamic segment `params` promise) and blocks the main thread without a local Suspense boundary, Next.js will throw build errors.
+- To opt-out of validation on dynamic layouts (like dashboards or pages using cookies/headers), export `export const unstable_instant = false`.
+
+## 3. Playwright E2E Tests
+- Use `instant(page, async () => { ... })` from `@next/playwright` to test instant shell loads.
+- Ensure that the static shells load immediately while the dynamic elements stream in later.

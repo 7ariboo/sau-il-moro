@@ -1,0 +1,29 @@
+---
+description: Apply this rule when writing CSS, layout structures, and Tailwind utility classes.
+globs: "src/app/**/*.css, src/app/**/*.tsx, src/components/**/*.tsx"
+---
+# Styling & Design Tokens Rules
+
+This project uses **Tailwind CSS v4** and local fonts.
+
+## 1. Tailwind CSS v4 Theme
+- Configure global custom variables and utilities in the `@theme` block inside `src/app/globals.css`.
+- Key color variables:
+  - Rust: `--color-brand-rust` (`#b34624`)
+  - Deep Black: `--color-deep-black` (`#0A0A0A`)
+  - Pure White: `--color-pure-white` (`#FFFFFF`)
+
+## 2. Typography
+- Fonts are loaded locally via `localFont` in `src/app/layout.tsx`.
+- CSS Custom Variables:
+  - Display Font: `var(--font-display)` (mapped from `NATRONRough-Bold.otf`)
+  - Sans-Serif Font: `var(--font-sans)` (mapped from `NATRONRough-Medium.otf`)
+- Standard Tailwind usage:
+  - Display: `font-display`
+  - Sans: `font-sans`
+
+## 3. Key Layout Styles
+- Background Concrete Texture: Apply `.bg-stone-texture` class to bodies/containers (renders concrete-wall pattern with `#f4f4f2` base).
+- Diagonal Clips (Hero/Header):
+  - `.clip-diagonal-header`
+  - `.clip-diagonal-reverse`

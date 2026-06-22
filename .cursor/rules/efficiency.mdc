@@ -1,0 +1,24 @@
+---
+description: Apply this rule to all interactions and commands to optimize token consumption and minimize context costs.
+globs: "*"
+---
+# Token-Saving & Efficiency Rules
+
+To minimize token usage and avoid costly context loops, you must follow these directives strictly:
+
+## 1. Minimal File Scanning & Reading
+- **Do not read recursively**: Never run `find .` or `ls -R` without strict depth rules.
+- **Targeted reads**: Read only the files or parts of files directly relevant to the current task. Do not scan unrelated folders/files "just in case".
+- **Use local context**: Rely on existing context files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`) instead of re-discovering project structure.
+
+## 2. Minimal & Targeted Edits
+- **Use precise replacements**: Do not overwrite whole files or large blocks if only small sections are changing. Use targeted replacements.
+- **No placeholder code**: Never write `// TODO: implement later` or stub functions. Stubbed code requires subsequent editing cycles, wasting tokens. Always write complete, production-ready code.
+
+## 3. Ultra-Concise Communication
+- **No filler**: Do not greet, sign off, or output conversational filler.
+- **No repetition**: Do not repeat back instructions or explain obvious changes in verbose detail.
+- **Concise answers**: State exactly what was changed or run, and provide the code block directly.
+
+## 4. Efficient Verification
+- **Validate at the end**: Avoid running builds/tests repeatedly during minor intermediate steps. Compile and test only when a logical unit is complete.
