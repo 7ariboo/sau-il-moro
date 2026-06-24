@@ -25,25 +25,13 @@ jobs:
       - name: 🏗️ Compilazione del progetto (Next.js)
         run: npm run build
 
-      - name: 📂 Caricamento file via FTPS su Hostinger
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: 📂 Caricamento file via SFTP su Hostinger
+        uses: wangyucode/sftp-upload-action@v2.0.2
         with:
-          server: 194.164.64.46
+          host: 194.164.64.46
+          port: 65002
           username: u546807385
           password: ${{ secrets.SFTP_PASSWORD }}
-          port: 21
-          protocol: ftps
-          local-dir: ./
-          server-dir: ./domains/sauilmoro.it/public_html/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.next/cache/**
-            **/tests/**
-            **/verification/**
-            **/docs/**
-            .cursor/**
-            .cursorrules
-            AGENTS.md
-            CLAUDE.md
+          localDir: './'
+          remoteDir: './domains/sauilmoro.it/public_html/'
+          exclude: '.git,.git/*,.github,.github/*,node_modules,node_modules/*,tests,tests/*,verification,verification/*,docs,docs/*,.cursor,.cursor/*,.next/cache,.next/cache/*,package-lock.json,.cursorrules,AGENTS.md,CLAUDE.md'
