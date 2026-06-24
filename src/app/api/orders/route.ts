@@ -45,8 +45,11 @@ export async function POST(request: Request) {
       shipping,
       total,
       status: 'pending',
+      fulfillmentStatus: 'unfulfilled',
       paymentStatus: 'paid', // Simulate successful payment
       paymentMethod: paymentMethod || 'stripe',
+      discountTotal: body.discountTotal || 0,
+      discountCode: body.discountCode || undefined,
       createdAt: new Date().toISOString(),
     };
 
