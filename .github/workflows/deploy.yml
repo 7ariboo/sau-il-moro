@@ -1,0 +1,53 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main  # Cambia con il nome del tuo branch principale (es. master) se diverso
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-size: 20
+          cache: 'npm'
+
+      - name: 📦 Installazione dipendenze
+        run: npm ci
+
+      - name: 🏗️ Compilazione del progetto (Next.js)
+        run: npm run build
+
+      - name: 📂 Caricamento file via SFTP su Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 194.164.64.46
+          username: u546807385
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 65002
+          protocol: sftp
+          # Se usi l'export statico, decommenta la riga sotto per caricare solo la cartella 'out'
+          # local-dir: ./out/
+          # Se carichi l'intero progetto compilato per Node.js, carica tutto:
+          local-dir: ./
+          server-dir: ./domains/sauilmoro.it/public_html/
+          # Escludi cartelle pesanti non necessarie al runtime di produzione
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.next/cache/**
+            **/tests/**
+            **/verification/**
+            **/docs/**
+            .cursor/**
+            .cursorrules
+            AGENTS.md
+            CLAUDE.md
