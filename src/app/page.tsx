@@ -53,7 +53,6 @@ export default function Home() {
           height={1148}
           priority
           className="w-full h-auto block hidden md:block"
-          style={{ marginTop: '-12%' }}
         />
         {/* Pulsante desktop — in alto a destra */}
         <button
