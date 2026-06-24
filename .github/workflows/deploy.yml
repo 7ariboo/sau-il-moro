@@ -3,7 +3,8 @@ name: Deploy to Hostinger
 on:
   push:
     branches:
-      - main  # Cambia con il nome del tuo branch principale (es. master) se diverso
+      - main
+      - sau-il-moro-ecommerce-complete-12557413869437779947
 
 jobs:
   build-and-deploy:
