@@ -26,28 +26,12 @@ jobs:
         run: npm run build
 
       - name: 📂 Caricamento file via SFTP su Hostinger
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wangyucode/sftp-upload-action@v2.0.2
         with:
-          server: 194.164.64.46
+          host: 194.164.64.46
+          port: 65002
           username: u546807385
           password: ${{ secrets.SFTP_PASSWORD }}
-          port: 65002
-          protocol: sftp
-          # Se usi l'export statico, decommenta la riga sotto per caricare solo la cartella 'out'
-          # local-dir: ./out/
-          # Se carichi l'intero progetto compilato per Node.js, carica tutto:
-          local-dir: ./
-          server-dir: ./domains/sauilmoro.it/public_html/
-          # Escludi cartelle pesanti non necessarie al runtime di produzione
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.next/cache/**
-            **/tests/**
-            **/verification/**
-            **/docs/**
-            .cursor/**
-            .cursorrules
-            AGENTS.md
-            CLAUDE.md
+          localDir: './'
+          remoteDir: './domains/sauilmoro.it/public_html/'
+          exclude: '.git,.git/*,.github,.github/*,node_modules,node_modules/*,tests,tests/*,verification,verification/*,docs,docs/*,.cursor,.cursor/*,.next/cache,.next/cache/*,package-lock.json,.cursorrules,AGENTS.md,CLAUDE.md'
