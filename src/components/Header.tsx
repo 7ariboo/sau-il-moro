@@ -52,7 +52,7 @@ export const Header: React.FC = () => {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="text-[#5a4a3a] hover:text-[#b34624] transition-colors font-display font-bold tracking-widest uppercase text-sm md:text-base">
+            <Link href="/" className="text-[#5a4a3a] hover:text-[#b34624] transition-colors font-display font-bold tracking-widest uppercase text-sm md:text-lg">
               SAU IL MORO
             </Link>
           </div>
@@ -63,7 +63,7 @@ export const Header: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#5a4a3a] hover:text-[#b34624] transition-colors relative group"
+                className="text-sm font-bold uppercase tracking-[0.2em] text-[#5a4a3a] hover:text-[#b34624] transition-colors relative group"
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#b34624] transition-all duration-300 group-hover:w-full" />
