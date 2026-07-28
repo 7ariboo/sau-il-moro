@@ -1,4 +1,4 @@
-import { Product, Category, Order, DiscountCode } from './types';
+import { Product, Category, Order, DiscountCode, IntegrationSettings } from './types';
 
 export const CATEGORIES: Category[] = [
   {
@@ -33,6 +33,35 @@ export const CATEGORIES: Category[] = [
 
 export const PRODUCTS: Product[] = [
   {
+    id: '5',
+    name: 'Bundle Sau Il Moro',
+    slug: 'bundle-sau-il-moro',
+    price: 360,
+    compareAtPrice: 424,
+    description: 'Il set completo definitivo di Sau Il Moro. Include i 4 pezzi iconici della nostra collezione artigianale:\n\n• Arburesa (120€)\n• Pattadese (150€)\n• Galluresa (130€)\n• Coltello Salvezza (24€)\n\nValore totale: 424€ — Tuo a soli 360€ con un risparmio immediato di 64€!\n\nLa Sardegna non si racconta. Si porta con sé. Ogni coltello racchiude tradizione, carattere e il sapere di una terra che ha fatto della semplicità una forza. Costruiti per durare, pensati per essere usati. Proprio come piace a Sau il Moro.',
+    shortDescription: 'Arburesa + Pattadese + Gallurese + Coltello Salvezza (Risparmi 64€)',
+    images: [
+      '/images/1/DSC09907.jpg',
+      '/images/3/DSC09922.jpg',
+      '/images/2/DSC09914.jpg',
+      '/images/4/DSC09939.jpg',
+      '/images/1/DSC09943.jpg',
+    ],
+    category: 'ferro',
+    material: 'Acciaio, Corno e Inox',
+    tags: ['bundle', 'offerta', 'coltelli', 'set completo', 'risparmio'],
+    isWow: true,
+    inStock: true,
+    stockQuantity: 10,
+    details: [
+      { label: 'Contenuto', value: '4 Coltelli Artigianali Sardi' },
+      { label: 'Prodotti inclusi', value: 'Arburesa, Pattadese, Galluresa, Coltello Salvezza' },
+      { label: 'Risparmio', value: '64 € (Valore 424 €)' },
+      { label: 'Provenienza', value: 'Sardegna, Italia' },
+    ],
+    createdAt: '2024-01-05T00:00:00Z',
+  },
+  {
     id: '1',
     name: 'Arburesa',
     slug: 'arburesa',
@@ -61,38 +90,6 @@ export const PRODUCTS: Product[] = [
       { label: 'Provenienza', value: 'Sardegna, Italia' },
     ],
     createdAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Galluresa',
-    slug: 'galluresa',
-    price: 135,
-    description: 'Compatta, resistente e pronta all\'uso. La Galluresa rappresenta la tradizione del nord della Sardegna, con un design deciso e una presa sicura.\n\nÈ il coltello ideale per chi cerca affidabilità, semplicità e uno stile che racconta una terra fatta di granito, vento e fuoco.\n\nNon è solo un coltello: è un pezzo di Sardegna che puoi tenere sempre con te.',
-    shortDescription: 'Carattere forte, anima sarda.',
-    images: [
-      '/images/2/DSC09914.jpg',
-      '/images/2/DSC09916.jpg',
-      '/images/2/DSC09918.jpg',
-      '/images/2/DSC09920.jpg',
-      '/images/2/DSC09960.jpg',
-      '/images/2/DSC09961.jpg',
-      '/images/2/DSC09962.jpg',
-      '/images/2/DSC09963.jpg',
-      '/images/2/DSC09964.jpg',
-      '/images/2/DSC09966.jpg',
-    ],
-    category: 'ferro',
-    material: 'Acciaio e Corno',
-    tags: ['artigianato', 'coltelli', 'gallura', 'tradizione'],
-    isWow: true,
-    inStock: true,
-    stockQuantity: 4,
-    details: [
-      { label: 'Tipologia', value: 'Coltello a serramanico' },
-      { label: 'Tradizione', value: 'Gallurese' },
-      { label: 'Provenienza', value: 'Sardegna, Italia' },
-    ],
-    createdAt: '2024-01-02T00:00:00Z',
   },
   {
     id: '3',
@@ -126,10 +123,42 @@ export const PRODUCTS: Product[] = [
     createdAt: '2024-01-03T00:00:00Z',
   },
   {
+    id: '2',
+    name: 'Galluresa',
+    slug: 'galluresa',
+    price: 130,
+    description: 'Compatta, resistente e pronta all\'uso. La Galluresa rappresenta la tradizione del nord della Sardegna, con un design deciso e una presa sicura.\n\nÈ il coltello ideale per chi cerca affidabilità, semplicità e uno stile che racconta una terra fatta di granito, vento e fuoco.\n\nNon è solo un coltello: è un pezzo di Sardegna che puoi tenere sempre con te.',
+    shortDescription: 'Carattere forte, anima sarda.',
+    images: [
+      '/images/2/DSC09914.jpg',
+      '/images/2/DSC09916.jpg',
+      '/images/2/DSC09918.jpg',
+      '/images/2/DSC09920.jpg',
+      '/images/2/DSC09960.jpg',
+      '/images/2/DSC09961.jpg',
+      '/images/2/DSC09962.jpg',
+      '/images/2/DSC09963.jpg',
+      '/images/2/DSC09964.jpg',
+      '/images/2/DSC09966.jpg',
+    ],
+    category: 'ferro',
+    material: 'Acciaio e Corno',
+    tags: ['artigianato', 'coltelli', 'gallura', 'tradizione'],
+    isWow: true,
+    inStock: true,
+    stockQuantity: 4,
+    details: [
+      { label: 'Tipologia', value: 'Coltello a serramanico' },
+      { label: 'Tradizione', value: 'Gallurese' },
+      { label: 'Provenienza', value: 'Sardegna, Italia' },
+    ],
+    createdAt: '2024-01-02T00:00:00Z',
+  },
+  {
     id: '4',
     name: 'Coltello Salvezza',
     slug: 'coltello-salvezza',
-    price: 25,
+    price: 24,
     description: 'Da una semplice scheda… a un vero coltello.\n\nIl Coltello Salvezza è pensato per chi vuole avere una lama sempre a disposizione senza occupare spazio. Chiuso ha le dimensioni di una normale carta da portafoglio; in pochi secondi si trasforma in un pratico coltello pieghevole.\n\nPerfetto da tenere nel portafoglio, nello zaino, in auto o nell\'attrezzatura da outdoor.\n\nCompatto, leggero e sorprendentemente funzionale, è l\'accessorio ideale per affrontare le piccole situazioni quotidiane in cui avere una lama può fare la differenza.\n\nPerché le cose migliori sono quelle che hai con te quando servono.',
     shortDescription: 'Sempre con te, quando serve davvero.',
     images: [
@@ -157,41 +186,77 @@ export const PRODUCTS: Product[] = [
 ];
 
 // ─── Orders ────────────────────────────────────────────────────────────
-
 export const orders: Order[] = [];
 
-export function generateOrderId() {
-  return 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+export function generateOrderId(): string {
+  return `SM-${Math.floor(100000 + Math.random() * 900000)}`;
 }
 
-// ─── Newsletter ────────────────────────────────────────────────────────
+export function getProductBySlug(slug: string): Product | undefined {
+  return PRODUCTS.find(p => p.slug === slug);
+}
+
+export function getProductById(id: string): Product | undefined {
+  return PRODUCTS.find(p => p.id === id);
+}
+
+export function getProductsByCategory(categorySlug: string): Product[] {
+  return PRODUCTS.filter(p => p.category === categorySlug);
+}
+
+export function searchProducts(query: string): Product[] {
+  const q = query.toLowerCase();
+  return PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+}
+
+export function addProduct(newProduct: Omit<Product, 'id' | 'createdAt'>): Product {
+  const p: Product = {
+    ...newProduct,
+    id: `prod-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+  };
+  PRODUCTS.push(p);
+  return p;
+}
+
+export function updateProduct(id: string, updates: Partial<Product>): Product | null {
+  const idx = PRODUCTS.findIndex(p => p.id === id);
+  if (idx === -1) return null;
+  PRODUCTS[idx] = { ...PRODUCTS[idx], ...updates };
+  return PRODUCTS[idx];
+}
+
+export function deleteProduct(id: string): boolean {
+  const idx = PRODUCTS.findIndex(p => p.id === id);
+  if (idx === -1) return false;
+  PRODUCTS.splice(idx, 1);
+  return true;
+}
+
+export function getCategoryBySlug(slug: string): Category | undefined {
+  return CATEGORIES.find(c => c.slug === slug);
+}
 
 export const newsletterSubscribers: { email: string; subscribedAt: string }[] = [];
 
-// ─── Discounts ──────────────────────────────────────────────────────────
-
 export const DISCOUNT_CODES: DiscountCode[] = [
-  { code: 'SAUMORO10', type: 'percentage', value: 10, minSubtotal: 0 },
+  { code: 'SAUMORO10', type: 'percentage', value: 10 },
+  { code: 'BENVENUTO', type: 'fixed', value: 15, minSubtotal: 50 },
 ];
 
-export function addDiscountCode(discount: DiscountCode) {
-  DISCOUNT_CODES.push(discount);
-  return discount;
+export function addDiscountCode(codeData: DiscountCode): DiscountCode {
+  DISCOUNT_CODES.push(codeData);
+  return codeData;
 }
 
-export function deleteDiscountCode(code: string) {
-  const index = DISCOUNT_CODES.findIndex(d => d.code === code);
-  if (index !== -1) {
-    return DISCOUNT_CODES.splice(index, 1)[0];
-  }
-  return null;
+export function deleteDiscountCode(code: string): boolean {
+  const idx = DISCOUNT_CODES.findIndex(d => d.code === code);
+  if (idx === -1) return false;
+  DISCOUNT_CODES.splice(idx, 1);
+  return true;
 }
 
-// ─── Settings ──────────────────────────────────────────────────────────
-
-import { IntegrationSettings } from './types';
-
-export let INTEGRATION_SETTINGS: IntegrationSettings = {
+export const INTEGRATION_SETTINGS: IntegrationSettings = {
   stripePublicKey: '',
   stripeSecretKey: '',
   paypalClientId: '',
@@ -202,61 +267,7 @@ export let INTEGRATION_SETTINGS: IntegrationSettings = {
   googleAnalyticsId: '',
 };
 
-export function updateIntegrationSettings(newSettings: Partial<IntegrationSettings>) {
-  INTEGRATION_SETTINGS = { ...INTEGRATION_SETTINGS, ...newSettings };
+export function updateIntegrationSettings(updates: Partial<IntegrationSettings>): IntegrationSettings {
+  Object.assign(INTEGRATION_SETTINGS, updates);
   return INTEGRATION_SETTINGS;
-}
-
-// ─── Helpers ───────────────────────────────────────────────────────────
-
-export function getProductById(id: string): Product | undefined {
-  return PRODUCTS.find(p => p.id === id);
-}
-
-export function getProductsByCategory(category: string): Product[] {
-  return PRODUCTS.filter(p => p.category === category);
-}
-
-export function getCategoryBySlug(slug: string): Category | undefined {
-  return CATEGORIES.find(c => c.slug === slug);
-}
-
-// ─── Data Modification ────────────────────────────────────────────────
-
-export function addProduct(product: Omit<Product, 'id' | 'createdAt' | 'slug'>) {
-  const newProduct: Product = {
-    ...product,
-    id: (PRODUCTS.length + 1).toString(),
-    slug: product.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
-    createdAt: new Date().toISOString(),
-  };
-  PRODUCTS.unshift(newProduct);
-  return newProduct;
-}
-
-export function updateProduct(id: string, updates: Partial<Product>) {
-  const index = PRODUCTS.findIndex(p => p.id === id);
-  if (index !== -1) {
-    PRODUCTS[index] = { ...PRODUCTS[index], ...updates };
-    return PRODUCTS[index];
-  }
-  return null;
-}
-
-export function deleteProduct(id: string) {
-  const index = PRODUCTS.findIndex(p => p.id === id);
-  if (index !== -1) {
-    const deleted = PRODUCTS.splice(index, 1);
-    return deleted[0];
-  }
-  return null;
-}
-
-export function searchProducts(query: string): Product[] {
-  const q = query.toLowerCase();
-  return PRODUCTS.filter(p =>
-    p.name.toLowerCase().includes(q) ||
-    p.description.toLowerCase().includes(q) ||
-    p.category.toLowerCase().includes(q)
-  );
 }

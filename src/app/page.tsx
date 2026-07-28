@@ -12,7 +12,7 @@ export default function Home() {
   const [nlEmail, setNlEmail] = useState('');
   const [nlStatus, setNlStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const featuredProducts = PRODUCTS.slice(0, 4);
+  const featuredProducts = PRODUCTS;
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,16 +143,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
         <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="max-w-xl text-pure-white">
-            <p className="text-brand-rust text-xs font-bold uppercase tracking-[0.4em] mb-4">Focus On</p>
-            <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-6">Coltelli Artigianali</h2>
+            <p className="text-brand-rust text-xs font-bold uppercase tracking-[0.4em] mb-4 font-bold">Esclusivo Sau Il Moro</p>
+            <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-6">Bundle Sau Il Moro</h2>
             <p className="text-lg text-pure-white/80 leading-relaxed">
-              La tradizione sarda non si racconta. Si porta con sé.
-              Una collezione di coltelli unici forgiati a mano per accompagnarti ovunque.
+              Tutti i 4 coltelli iconici in un unico set esclusivo: Arburesa + Pattadese + Gallurese + Coltello Salvezza.
+              Valore 424€, tuo a soli 360€ con uno sconto speciale di 64€.
             </p>
             <div className="mt-8">
-              <Link href="/category/ferro">
+              <Link href="/products/bundle-sau-il-moro">
                 <ButtonCustom variant="outline" className="!text-pure-white !border-pure-white/40 hover:!bg-brand-rust hover:!border-brand-rust">
-                  Scopri la collezione
+                  Scopri il Bundle (360 €)
                 </ButtonCustom>
               </Link>
             </div>
@@ -160,7 +160,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products: Coltelli Artigianali con foto coltello in sottofondo */}
+      {/* Featured Products: Coltelli Artigianali & Bundle con foto coltello in sottofondo */}
       <section className="relative py-24 overflow-hidden bg-neutral-900 text-white">
         {/* Background photo of knife */}
         <div className="absolute inset-0 opacity-30">
@@ -178,16 +178,16 @@ export default function Home() {
           <div className="flex items-center justify-between mb-12">
             <div>
               <h2 className="text-4xl md:text-5xl font-display font-bold uppercase tracking-tight text-white">
-                Coltelli Artigianali
+                Coltelli & Bundle Artigianali
               </h2>
               <p className="text-sm text-brand-rust uppercase tracking-widest font-bold mt-2">
                 La Sardegna non si racconta. Si porta con sé.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.map((product, i) => (
-              <ProductCard key={product.id} {...product} showCart={i === 0} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} {...product} showCart />
             ))}
           </div>
         </div>
