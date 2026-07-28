@@ -6,28 +6,28 @@ export const CATEGORIES: Category[] = [
     slug: 'ferro',
     name: 'FERRO',
     description: 'L\'arte della forgia sarda. Coltelli fatti a mano, lame forgiate e oggetti in ferro battuto.',
-    image: '/images/sardinian_forged_knife_ferro_1778776655712.png',
+    image: '/images/Sfondo/coltello.png',
   },
   {
     id: 'cat-2',
     slug: 'legno',
     name: 'LEGNO',
     description: 'Il calore delle essenze sarde secolari. Taglieri, manici e oggetti in rovere, olivastro e castagno.',
-    image: '/images/sardinian_carved_wood_legno_1778776910441.png',
+    image: '/images/Sfondo/capretta.png',
   },
   {
     id: 'cat-3',
     slug: 'terra',
     name: 'TERRA',
     description: 'L\'argilla e l\'intreccio, radici di un popolo. Ceramiche e cestini della tradizione barbaricina.',
-    image: '/images/sardinian_ceramics_terra_1778777114216.png',
+    image: '/images/Sfondo/mare.png',
   },
   {
     id: 'cat-4',
     slug: 'carne',
     name: 'CARNE',
     description: 'I sapori decisi della Barbagia. Salumi, pancetta e prodotti tipici della norcineria sarda.',
-    image: '/images/sardinian_food_carne_salsiccia_1778777826833.png',
+    image: '/images/Sfondo/salumi.png',
   },
 ];
 
