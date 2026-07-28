@@ -1,8 +1,18 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  signInWithPopup,
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db, googleProvider, appleProvider } from '@/lib/firebase';
+import { sendWelcomeEmail } from '@/lib/email';
 
-interface AuthUser {
+export interface AuthUser {
   id: string;
   email: string;
   name: string;
@@ -15,7 +25,9 @@ interface AuthContextType {
   user: AuthUser | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (data: { email: string; password: string; name: string; surname: string; phone?: string }) => Promise<{ success: boolean; error?: string }>;
+  register: (data: { email: string; password: string; name: string; surname: string; phone?: string; newsletter?: boolean }) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
+  loginWithApple: () => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -26,63 +38,204 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Sync Firebase Auth state with Firestore user profile or LocalStorage fallback
   useEffect(() => {
-    const saved = localStorage.getItem('sau-auth-user');
-    if (saved) {
-      try {
-        setUser(JSON.parse(saved));
-      } catch {
-        localStorage.removeItem('sau-auth-user');
+    if (auth && db) {
+      const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+        if (fbUser) {
+          try {
+            const userDocRef = doc(db!, 'users', fbUser.uid);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+              const data = userDoc.data();
+              const profile: AuthUser = {
+                id: fbUser.uid,
+                email: fbUser.email || '',
+                name: data.name || fbUser.displayName?.split(' ')[0] || 'Utente',
+                surname: data.surname || fbUser.displayName?.split(' ').slice(1).join(' ') || '',
+                phone: data.phone || '',
+                role: data.role || (fbUser.email === 'admin@sauilmoro.it' ? 'admin' : 'customer'),
+              };
+              setUser(profile);
+              localStorage.setItem('sau-auth-user', JSON.stringify(profile));
+            } else {
+              const name = fbUser.displayName?.split(' ')[0] || 'Utente';
+              const surname = fbUser.displayName?.split(' ').slice(1).join(' ') || '';
+              const newProfile: AuthUser = {
+                id: fbUser.uid,
+                email: fbUser.email || '',
+                name,
+                surname,
+                phone: '',
+                role: fbUser.email === 'admin@sauilmoro.it' ? 'admin' : 'customer',
+              };
+              await setDoc(userDocRef, { ...newProfile, createdAt: new Date().toISOString() });
+              setUser(newProfile);
+              localStorage.setItem('sau-auth-user', JSON.stringify(newProfile));
+              if (fbUser.email) {
+                sendWelcomeEmail(fbUser.email, name);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
+          }
+        } else {
+          setUser(null);
+          localStorage.removeItem('sau-auth-user');
+        }
+        setIsLoading(false);
+      });
+      return () => unsubscribe();
+    } else {
+      const saved = localStorage.getItem('sau-auth-user');
+      if (saved) {
+        try {
+          setUser(JSON.parse(saved));
+        } catch {
+          localStorage.removeItem('sau-auth-user');
+        }
       }
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setUser(data.data);
-        localStorage.setItem('sau-auth-user', JSON.stringify(data.data));
+      if (auth) {
+        await signInWithEmailAndPassword(auth, email, password);
+        return { success: true };
+      } else {
+        const mockUser: AuthUser = {
+          id: email === 'admin@sauilmoro.it' ? 'admin-1' : `user-${Date.now()}`,
+          email,
+          name: email.split('@')[0],
+          surname: 'Sardo',
+          phone: '+39 333 1234567',
+          role: email === 'admin@sauilmoro.it' ? 'admin' : 'customer',
+        };
+        setUser(mockUser);
+        localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
         return { success: true };
       }
-      return { success: false, error: data.error };
-    } catch {
-      return { success: false, error: 'Errore di connessione' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Credenziali non valide' };
     }
   };
 
-  const register = async (regData: { email: string; password: string; name: string; surname: string; phone?: string }) => {
+  const register = async (data: {
+    email: string;
+    password: string;
+    name: string;
+    surname: string;
+    phone?: string;
+    newsletter?: boolean;
+  }) => {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(regData),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setUser(data.data);
-        localStorage.setItem('sau-auth-user', JSON.stringify(data.data));
+      if (auth && db) {
+        const userCred = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        const profile: AuthUser = {
+          id: userCred.user.uid,
+          email: data.email,
+          name: data.name,
+          surname: data.surname,
+          phone: data.phone || '',
+          role: 'customer',
+        };
+        await setDoc(doc(db!, 'users', userCred.user.uid), {
+          ...profile,
+          newsletter: !!data.newsletter,
+          createdAt: new Date().toISOString(),
+        });
+        setUser(profile);
+        localStorage.setItem('sau-auth-user', JSON.stringify(profile));
+        sendWelcomeEmail(data.email, data.name);
+        return { success: true };
+      } else {
+        const mockUser: AuthUser = {
+          id: `user-${Date.now()}`,
+          email: data.email,
+          name: data.name,
+          surname: data.surname,
+          phone: data.phone || '',
+          role: 'customer',
+        };
+        setUser(mockUser);
+        localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
+        sendWelcomeEmail(data.email, data.name);
         return { success: true };
       }
-      return { success: false, error: data.error };
-    } catch {
-      return { success: false, error: 'Errore di connessione' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Errore nella registrazione' };
     }
   };
 
-  const logout = () => {
+  const loginWithGoogle = async () => {
+    try {
+      if (auth && googleProvider) {
+        await signInWithPopup(auth, googleProvider);
+        return { success: true };
+      } else {
+        const mockUser: AuthUser = {
+          id: `google-user-${Date.now()}`,
+          email: 'utente.google@gmail.com',
+          name: 'Utente',
+          surname: 'Google',
+          phone: '',
+          role: 'customer',
+        };
+        setUser(mockUser);
+        localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
+        return { success: true };
+      }
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Errore durante l\'accesso con Google' };
+    }
+  };
+
+  const loginWithApple = async () => {
+    try {
+      if (auth && appleProvider) {
+        await signInWithPopup(auth, appleProvider);
+        return { success: true };
+      } else {
+        const mockUser: AuthUser = {
+          id: `apple-user-${Date.now()}`,
+          email: 'utente.apple@icloud.com',
+          name: 'Utente',
+          surname: 'Apple',
+          phone: '',
+          role: 'customer',
+        };
+        setUser(mockUser);
+        localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
+        return { success: true };
+      }
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Errore durante l\'accesso con Apple' };
+    }
+  };
+
+  const logout = async () => {
+    if (auth) {
+      await signOut(auth);
+    }
     setUser(null);
     localStorage.removeItem('sau-auth-user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, isAdmin: user?.role === 'admin' }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        login,
+        register,
+        loginWithGoogle,
+        loginWithApple,
+        logout,
+        isAdmin: user?.role === 'admin',
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

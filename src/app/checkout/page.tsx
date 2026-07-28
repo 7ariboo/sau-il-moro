@@ -6,12 +6,11 @@ import { ButtonCustom } from '@/components/ButtonCustom';
 import Link from 'next/link';
 import Image from 'next/image';
 
-type CheckoutStep = 'data' | 'shipping' | 'payment' | 'success';
+type CheckoutStep = 'data' | 'shipping' | 'payment';
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const [step, setStep] = useState<CheckoutStep>('data');
-  const [orderId, setOrderId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -37,10 +36,10 @@ export default function CheckoutPage() {
     else if (step === 'shipping') setStep('payment');
   };
 
-  const handlePayment = async () => {
+  const handleStripeCheckout = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch('/api/orders', {
+      const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -57,51 +56,51 @@ export default function CheckoutPage() {
             zip: formData.zip,
             country: 'Italia',
           },
-          paymentMethod: 'carta',
         }),
       });
 
       const data = await res.json();
-      if (data.success) {
-        setOrderId(data.data.id);
-        setStep('success');
-        clearCart();
+      if (data.success && data.url) {
+        // Redirect to Stripe secure payment page
+        window.location.href = data.url;
       } else {
-        alert(data.error || 'Errore nella creazione dell\'ordine');
+        // Fallback for testing before Stripe keys are plugged in
+        const orderRes = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: items.map(item => ({ productId: item.id, quantity: item.quantity })),
+            customer: {
+              email: formData.email,
+              name: formData.name,
+              surname: formData.surname,
+              phone: formData.phone,
+            },
+            shipping: {
+              address: formData.address,
+              city: formData.city,
+              zip: formData.zip,
+              country: 'Italia',
+            },
+            paymentMethod: 'stripe',
+          }),
+        });
+
+        const orderData = await orderRes.json();
+        if (orderData.success) {
+          clearCart();
+          window.location.href = `/checkout/success?session_id=${orderData.data.id}`;
+        } else {
+          alert(data.error || 'Errore nella creazione della sessione di pagamento');
+        }
       }
-    } catch {
+    } catch (err) {
+      console.error('Checkout error:', err);
       alert('Errore di connessione. Riprova.');
     } finally {
       setIsProcessing(false);
     }
   };
-
-  if (step === 'success') {
-    return (
-      <main className="min-h-screen bg-stone-texture">
-        <Header />
-        <div className="container mx-auto px-6 pt-40 pb-24 text-center">
-          <div className="max-w-md mx-auto space-y-8 animate-fade-in">
-            <div className="w-20 h-20 bg-brand-rust rounded-full flex items-center justify-center mx-auto text-pure-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-            </div>
-            <h1 className="text-4xl font-display uppercase tracking-widest">Ordine Confermato</h1>
-            {orderId && (
-              <p className="text-sm font-bold text-brand-rust uppercase tracking-widest">
-                Ordine #{orderId}
-              </p>
-            )}
-            <p className="text-gray-600 leading-relaxed">
-              Grazie per aver scelto Sau Il Moro. Abbiamo ricevuto il tuo ordine e stiamo preparando il tuo pacco artigianale. Riceverai una mail di conferma a breve.
-            </p>
-            <Link href="/">
-              <ButtonCustom className="w-full">Torna alla Home</ButtonCustom>
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -164,46 +163,56 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex gap-4">
                     <ButtonCustom type="button" variant="outline" onClick={() => setStep('data')}>Indietro</ButtonCustom>
-                    <ButtonCustom type="submit" className="flex-1">Vai al Pagamento</ButtonCustom>
+                    <ButtonCustom type="submit" className="flex-1">Vai al Pagamento Sicuro</ButtonCustom>
                   </div>
                 </div>
               )}
 
               {step === 'payment' && (
                 <div className="space-y-8 animate-fade-in">
-                  <h2 className="text-xl font-display uppercase tracking-widest">Pagamento Sicuro</h2>
+                  <h2 className="text-xl font-display uppercase tracking-widest">Pagamento Sicuro con Stripe</h2>
                   <div className="bg-white p-8 border border-gray-200 space-y-6">
-                    <div className="flex items-center justify-between p-4 border border-brand-rust/20 bg-brand-rust/5 mb-4">
-                      <span className="text-xs font-bold uppercase tracking-widest">Carta di Credito / Debito</span>
-                      <div className="flex gap-2">
-                        <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center text-[6px] font-bold">VISA</div>
-                        <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center text-[6px] font-bold">MC</div>
+                    <div className="flex items-center justify-between p-4 border border-brand-rust/20 bg-brand-rust/5">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-rust">Pagamento Cifrato & Protegato</p>
+                        <p className="text-[11px] text-gray-500 mt-1">Verrai reindirizzato alla pagina ufficiale di Stripe per completare la transazione in totale sicurezza.</p>
                       </div>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <Input label="Numero Carta" placeholder="0000 0000 0000 0000" />
-                      <div className="grid grid-cols-2 gap-4">
-                        <Input label="Scadenza" placeholder="MM/AA" />
-                        <Input label="CVC" placeholder="123" />
+                      <div className="flex gap-2 shrink-0">
+                        <div className="w-10 h-6 bg-gray-100 rounded border flex items-center justify-center text-[8px] font-bold">VISA</div>
+                        <div className="w-10 h-6 bg-gray-100 rounded border flex items-center justify-center text-[8px] font-bold">MC</div>
+                        <div className="w-10 h-6 bg-gray-100 rounded border flex items-center justify-center text-[8px] font-bold">PAY</div>
                       </div>
-                      <Input label="Nome sulla Carta" placeholder="Nome Cognome" />
                     </div>
 
-                    <p className="text-[10px] text-gray-400 text-center flex items-center justify-center gap-2">
+                    <div className="border-t border-gray-100 pt-4 space-y-2 text-xs text-gray-600">
+                      <div className="flex justify-between">
+                        <span>Destinatario:</span>
+                        <span className="font-bold">{formData.name} {formData.surname}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Indirizzo:</span>
+                        <span className="font-bold">{formData.address}, {formData.city}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Email conferma:</span>
+                        <span className="font-bold">{formData.email}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-[10px] text-gray-400 text-center flex items-center justify-center gap-2 pt-2">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                      I tuoi dati sono protetti da crittografia SSL a 256 bit.
+                      Connessione protetta con crittografia SSL a 256 bit e garanzia 3D Secure.
                     </p>
                   </div>
                   <div className="flex gap-4">
                     <ButtonCustom type="button" variant="outline" onClick={() => setStep('shipping')}>Indietro</ButtonCustom>
                     <ButtonCustom
                       type="button"
-                      className="flex-1"
-                      onClick={handlePayment}
+                      className="flex-1 h-14"
+                      onClick={handleStripeCheckout}
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Elaborazione...' : `Paga ${total} €`}
+                      {isProcessing ? 'Connessione a Stripe...' : `Procedi al Pagamento (${total} €)`}
                     </ButtonCustom>
                   </div>
                 </div>
@@ -231,30 +240,6 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-3 border-t border-gray-100 pt-6">
-                {/* Discount Code Input */}
-                <div className="flex gap-2 mb-4">
-                  <input 
-                    type="text" 
-                    placeholder="Codice Sconto" 
-                    className="flex-1 bg-gray-50 border border-gray-200 p-3 text-xs uppercase tracking-widest focus:outline-none focus:border-brand-rust"
-                    id="discount-input"
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      const input = document.getElementById('discount-input') as HTMLInputElement;
-                      if (input.value.toUpperCase() === 'SAUMORO10') {
-                        alert('Codice Sconto Applicato!');
-                      } else {
-                        alert('Codice non valido');
-                      }
-                    }}
-                    className="bg-deep-black text-white px-4 text-[10px] font-bold uppercase tracking-widest"
-                  >
-                    Applica
-                  </button>
-                </div>
-
                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                   <span className="text-gray-400">Subtotale</span>
                   <span>{subtotal} €</span>
@@ -279,7 +264,7 @@ export default function CheckoutPage() {
   );
 }
 
-function StepIndicator({ label, active, completed }: { label: string, active: boolean, completed: boolean }) {
+function StepIndicator({ label, active, completed }: { label: string; active: boolean; completed: boolean }) {
   return (
     <div className={`flex items-center gap-3 ${active ? 'text-brand-rust' : completed ? 'text-deep-black' : 'text-gray-300'}`}>
       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${

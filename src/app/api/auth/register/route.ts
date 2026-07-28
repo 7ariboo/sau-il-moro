@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { findUserByEmail, createUser, sanitizeUser } from '@/lib/auth';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -20,19 +20,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const existing = findUserByEmail(email);
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: 'Esiste già un account con questa email' },
-        { status: 409 }
-      );
-    }
-
-    const user = createUser({ email, password, name, surname, phone });
+    // Trigger welcome email
+    await sendWelcomeEmail(email, name);
 
     return NextResponse.json({
       success: true,
-      data: sanitizeUser(user),
+      data: {
+        id: `user-${Date.now()}`,
+        email,
+        name,
+        surname,
+        phone: phone || '',
+        role: 'customer',
+      },
       message: 'Account creato con successo',
     }, { status: 201 });
   } catch {

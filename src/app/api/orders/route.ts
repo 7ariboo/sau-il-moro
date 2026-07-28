@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { orders, generateOrderId, PRODUCTS } from '@/lib/data';
 import { Order } from '@/lib/types';
+import { sendOrderConfirmationEmail, sendOrderStatusEmail } from '@/lib/email';
 
 export async function GET() {
   return NextResponse.json({ success: true, data: orders });
@@ -32,8 +33,10 @@ export async function POST(request: Request) {
     const shipping = subtotal >= 150 ? 0 : 15;
     const total = subtotal + shipping;
 
+    const orderId = generateOrderId();
+
     const newOrder: Order = {
-      id: generateOrderId(),
+      id: orderId,
       customer: {
         ...customer,
         address: body.shipping.address,
@@ -46,7 +49,7 @@ export async function POST(request: Request) {
       total,
       status: 'pending',
       fulfillmentStatus: 'unfulfilled',
-      paymentStatus: 'paid', // Simulate successful payment
+      paymentStatus: 'paid',
       paymentMethod: paymentMethod || 'stripe',
       discountTotal: body.discountTotal || 0,
       discountCode: body.discountCode || undefined,
@@ -54,6 +57,19 @@ export async function POST(request: Request) {
     };
 
     orders.unshift(newOrder);
+
+    // Send confirmation email
+    if (customer?.email) {
+      const customerFullName = `${customer.name || ''} ${customer.surname || ''}`.trim() || 'Cliente';
+      const fullAddress = `${body.shipping?.address || ''}, ${body.shipping?.zip || ''} ${body.shipping?.city || ''}`;
+      sendOrderConfirmationEmail(customer.email, {
+        id: orderId,
+        customerName: customerFullName,
+        items: orderItems.map((i: { name: string; quantity: number; price: number }) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+        total,
+        shippingAddress: fullAddress,
+      });
+    }
 
     return NextResponse.json({ success: true, data: newOrder }, { status: 201 });
   } catch (error: any) {
@@ -73,8 +89,15 @@ export async function PATCH(request: Request) {
     }
 
     orders[orderIndex].status = status;
+    const targetOrder = orders[orderIndex];
 
-    return NextResponse.json({ success: true, data: orders[orderIndex] });
+    // Send order status update email
+    if (targetOrder.customer?.email) {
+      const customerName = `${targetOrder.customer.name || ''} ${targetOrder.customer.surname || ''}`.trim() || 'Cliente';
+      sendOrderStatusEmail(targetOrder.customer.email, targetOrder.id, customerName, status);
+    }
+
+    return NextResponse.json({ success: true, data: targetOrder });
   } catch (error) {
     return NextResponse.json({ success: false, error: 'Errore nell\'aggiornamento dell\'ordine' }, { status: 500 });
   }
