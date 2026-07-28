@@ -15,7 +15,7 @@ export default function Home() {
 
   const categories = CATEGORIES.filter(c => ['carne', 'legno', 'ferro'].includes(c.slug));
 
-  const featuredProducts = PRODUCTS.filter(p => p.category === 'ferro').slice(0, 3);
+  const featuredProducts = PRODUCTS.slice(0, 4);
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -200,7 +200,7 @@ export default function Home() {
         <div className="flex items-center justify-between mb-12">
           <div>
             <h2 className="text-4xl font-display font-bold uppercase tracking-tight">Coltelli Artigianali</h2>
-            <p className="text-sm text-deep-black/40 uppercase tracking-widest font-bold mt-2">Fatti a mano in Sardegna</p>
+            <p className="text-sm text-deep-black/40 uppercase tracking-widest font-bold mt-2">La Sardegna non si racconta. Si porta con sé.</p>
           </div>
           <div className="hidden sm:flex gap-2">
             <button className="w-10 h-10 border border-deep-black/10 rounded-full flex items-center justify-center hover:bg-brand-rust hover:text-pure-white hover:border-brand-rust transition-all">
@@ -211,7 +211,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredProducts.map((product, i) => (
             <ProductCard key={product.id} {...product} showCart={i === 0} />
           ))}
