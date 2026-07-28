@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/Header';
@@ -11,7 +12,11 @@ export default function CategoryPage() {
   const slug = typeof params?.slug === 'string' ? params.slug : '';
 
   const category = getCategoryBySlug(slug);
-  const categoryInfo = category || { name: 'COLLEZIONE', description: 'Artigianato Sardo', image: '/images/ferro.png' };
+  const categoryInfo = category || {
+    name: 'COLLEZIONE',
+    description: 'Artigianato Sardo',
+    image: '/images/Sfondo/coltello.png',
+  };
 
   const products = useMemo(() => {
     return PRODUCTS.filter(p => p.category === slug);
@@ -21,28 +26,33 @@ export default function CategoryPage() {
     <main className="min-h-screen bg-stone-texture">
       <Header />
 
-      {/* Category Hero */}
-      <section className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden">
-        <Image
-          src={categoryInfo.image}
-          alt={categoryInfo.name}
-          fill
-          className="object-cover brightness-50"
-          priority
-          sizes="100vw"
-        />
-        <div className="relative z-10 text-center px-6">
-          <h1 className="text-pure-white text-6xl md:text-8xl font-display mb-4 uppercase tracking-widest animate-fade-in">
+      {/* Main Large Banner Image Container */}
+      <section className="pt-28 px-4 sm:px-6 md:px-8 container mx-auto">
+        <div className="relative w-full h-[65vh] md:h-[78vh] min-h-[420px] max-h-[800px] rounded-xl overflow-hidden shadow-xl border border-[#c8c4bc]/40">
+          <Image
+            src={categoryInfo.image}
+            alt={categoryInfo.name}
+            fill
+            className="object-cover object-center transition-transform duration-700 hover:scale-105"
+            priority
+            sizes="100vw"
+          />
+        </div>
+
+        {/* Text Section Below Image */}
+        <div className="text-center py-10 md:py-14 border-b border-[#c8c4bc]/30">
+          <h1 className="text-deep-black text-4xl sm:text-6xl md:text-7xl font-display mb-4 uppercase tracking-[0.2em]">
             {categoryInfo.name}
           </h1>
-          <p className="text-pure-white/80 text-sm md:text-base font-bold uppercase tracking-[0.4em] animate-fade-in max-w-xl mx-auto">
+          <p className="text-brand-rust text-sm sm:text-base md:text-lg font-bold uppercase tracking-[0.3em] max-w-2xl mx-auto leading-relaxed">
             {categoryInfo.description}
           </p>
         </div>
       </section>
 
-      <section className="py-24 container mx-auto px-6">
-        <p className="text-sm text-deep-black/40 uppercase tracking-widest font-bold mb-8">
+      {/* Products Grid */}
+      <section className="py-16 md:py-24 container mx-auto px-6">
+        <p className="text-sm text-deep-black/50 uppercase tracking-widest font-bold mb-10">
           {products.length} prodott{products.length === 1 ? 'o' : 'i'} disponibil{products.length === 1 ? 'e' : 'i'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -50,8 +60,10 @@ export default function CategoryPage() {
             <ProductCard key={product.id} {...product} showCart />
           ))}
           {products.length === 0 && (
-            <div className="col-span-full py-20 text-center border-2 border-dashed border-gray-200">
-              <p className="uppercase tracking-widest font-bold text-gray-400">Nessun prodotto disponibile in questa categoria</p>
+            <div className="col-span-full py-24 text-center border-2 border-dashed border-gray-300 rounded-lg bg-white/50">
+              <p className="uppercase tracking-widest font-bold text-gray-400">
+                Nessun prodotto attualmente disponibile in questa categoria
+              </p>
             </div>
           )}
         </div>
