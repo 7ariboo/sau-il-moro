@@ -61,44 +61,27 @@ export default function Home() {
             priority
             sizes="100vw"
           />
-          {/* Overlay sfumato per facilitare la lettura del testo */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%)',
-            }}
-          />
         </div>
 
-        {/* Testo in sovrapposizione in basso */}
-        <div className="relative z-10 flex flex-col justify-end items-center text-center pb-12 md:pb-20 px-6" style={{ minHeight: 'calc(100vh - 100px)' }}>
-          <div className="max-w-3xl w-full">
-            <p className="font-display font-bold uppercase text-white/90 tracking-widest text-center mb-1" style={{ fontSize: 'clamp(1rem, 4vw, 1.4rem)', letterSpacing: '0.15em' }}>
-              BENVENUTI NEL MONDO
-            </p>
-            <p className="font-display font-bold uppercase text-white text-center mb-2" style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', letterSpacing: '0.02em' }}>
-              DI SAU IL MORO
-            </p>
-            <p className="text-white/70 italic text-center mb-5" style={{ fontSize: 'clamp(0.8rem, 3.5vw, 1rem)' }}>
-              dalla sardegna a casa tua
-            </p>
-            <Link href="/category/ferro">
-              <button
-                className="font-display font-bold uppercase text-white transition-all active:scale-95"
-                style={{
-                  backgroundColor: '#b34624',
-                  borderRadius: '9999px',
-                  padding: '12px 36px',
-                  fontSize: 'clamp(0.85rem, 4vw, 1rem)',
-                  letterSpacing: '0.06em',
-                  border: 'none', cursor: 'pointer',
-                  boxShadow: '0 4px 20px rgba(179,70,36,0.6)',
-                }}
-              >
-                ESPLORA LA COLLEZIONE
-              </button>
-            </Link>
-          </div>
+        {/* Bottone in alto a sinistra */}
+        <div className="absolute top-6 left-6 md:top-10 md:left-12 z-10">
+          <Link href="/category/ferro">
+            <button
+              className="font-display font-bold uppercase text-white transition-all active:scale-95 hover:scale-105"
+              style={{
+                backgroundColor: '#b34624',
+                borderRadius: '9999px',
+                padding: '12px 32px',
+                fontSize: 'clamp(0.85rem, 3.5vw, 0.95rem)',
+                letterSpacing: '0.06em',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(179,70,36,0.6)',
+              }}
+            >
+              CHI SONO?
+            </button>
+          </Link>
         </div>
       </section>
 
