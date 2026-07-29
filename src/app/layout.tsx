@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { CookieBanner } from "@/components/CookieBanner";
+import { Footer } from "@/components/Footer";
 
 const natronDisplay = localFont({
   src: "../../public/fonts/NATRONRough-Bold.otf",
@@ -35,11 +36,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it">
-      <body className={`${natronDisplay.variable} ${natronSans.variable} font-sans antialiased text-deep-black bg-stone-texture`}>
+      <body className={`${natronDisplay.variable} ${natronSans.variable} font-sans antialiased text-deep-black bg-stone-texture min-h-screen flex flex-col justify-between`}>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              {children}
+              <div className="flex-1">
+                {children}
+              </div>
+              <Footer />
               <CookieBanner />
             </WishlistProvider>
           </CartProvider>

@@ -94,7 +94,6 @@ export default function TermsPage() {
           </footer>
         </div>
       </div>
-      <Footer />
     </main>
   );
 }
