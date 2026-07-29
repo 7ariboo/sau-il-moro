@@ -85,28 +85,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Secondary Nav Bar — solo desktop */}
-      <section className="hidden md:block bg-white border-y border-deep-black/5">
-        <div className="container mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-brand-rust">
-              <Image src="/images/Sfondo/coltello.png" alt="Sau" fill className="object-cover" sizes="40px" />
-            </div>
-            <span className="text-lg font-display font-bold uppercase">Sau Il Moro</span>
-          </div>
-          <nav className="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.2em]">
-            {CATEGORIES.filter(cat => cat.slug === 'ferro').map(cat => (
-              <Link
-                key={cat.slug}
-                href={`/category/${cat.slug}`}
-                className="hover:text-brand-rust transition-colors"
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </section>
 
       {/* Spotlight Banner con Sfondo Coltello */}
       <section className="relative w-full py-24 md:py-32 flex items-center overflow-hidden bg-deep-black">
