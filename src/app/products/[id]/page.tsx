@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
 import { ProductCard } from '@/components/ProductCard';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { getProductById, getProductsByCategory, getCategoryBySlug } from '@/lib/data';
 
 export default function ProductPage() {
   const params = useParams();
+  const router = useRouter();
   const id = typeof params?.id === 'string' ? params.id : '1';
 
   const { addItem } = useCart();
@@ -66,6 +67,16 @@ export default function ProductPage() {
     }, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleBuyNow = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0]
+    }, quantity);
+    router.push('/checkout');
   };
 
   return (
@@ -207,24 +218,35 @@ export default function ProductPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex items-center border-2 border-deep-black h-14">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 hover:text-brand-rust transition-colors"
-                >-</button>
-                <span className="flex-1 text-center font-bold min-w-[3rem]">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                  className="px-4 hover:text-brand-rust transition-colors"
-                >+</button>
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center border-2 border-deep-black h-14">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-4 hover:text-brand-rust transition-colors"
+                  >-</button>
+                  <span className="flex-1 text-center font-bold min-w-[3rem]">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                    className="px-4 hover:text-brand-rust transition-colors"
+                  >+</button>
+                </div>
+                <ButtonCustom
+                  className="flex-1 h-14"
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                >
+                  {addedToCart ? '✓ Aggiunto al Carrello' : 'Aggiungi al carrello'}
+                </ButtonCustom>
               </div>
+
               <ButtonCustom
-                className="flex-1 h-14"
-                onClick={handleAddToCart}
+                variant="outline"
+                className="w-full h-14 !bg-brand-rust !text-white !border-brand-rust hover:!bg-brand-rust/90 shadow-md font-bold uppercase tracking-widest text-xs"
+                onClick={handleBuyNow}
                 disabled={!product.inStock}
               >
-                {addedToCart ? '✓ Aggiunto!' : 'Aggiungi al carrello'}
+                ⚡ Acquista Ora (Express Checkout in 1 Click)
               </ButtonCustom>
             </div>
 
