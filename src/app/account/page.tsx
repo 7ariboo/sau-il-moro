@@ -225,11 +225,65 @@ function AccountDashboard({
   user,
   logout,
 }: {
-  user: { id: string; email: string; name: string; surname: string; phone: string; role: string };
+  user: { id: string; email: string; name: string; surname: string; phone: string; address?: string; city?: string; zip?: string; newsletter?: boolean; role: string };
   logout: () => void;
 }) {
   const [tab, setTab] = useState<Tab>('profile');
   const { items, subtotal } = useCart();
+  const { updateUserProfile } = useAuth();
+
+  // Profile Form state
+  const [profileForm, setProfileForm] = useState({
+    name: user.name || '',
+    surname: user.surname || '',
+    phone: user.phone || '',
+  });
+  const [profileMessage, setProfileMessage] = useState('');
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // Address Form state
+  const [addressForm, setAddressForm] = useState({
+    address: user.address || '',
+    city: user.city || '',
+    zip: user.zip || '',
+  });
+  const [addressMessage, setAddressMessage] = useState('');
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+
+  // Newsletter Toggle state
+  const [newsletterEnabled, setNewsletterEnabled] = useState(!!user.newsletter);
+
+  const handleProfileSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingProfile(true);
+    setProfileMessage('');
+    const res = await updateUserProfile(profileForm);
+    if (res.success) {
+      setProfileMessage('Profilo aggiornato con successo!');
+    } else {
+      setProfileMessage(res.error || 'Errore durante l\'aggiornamento.');
+    }
+    setIsSavingProfile(false);
+  };
+
+  const handleAddressSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingAddress(true);
+    setAddressMessage('');
+    const res = await updateUserProfile(addressForm);
+    if (res.success) {
+      setAddressMessage('Indirizzo di spedizione salvato con successo!');
+    } else {
+      setAddressMessage(res.error || 'Errore durante il salvataggio.');
+    }
+    setIsSavingAddress(false);
+  };
+
+  const handleNewsletterToggle = async () => {
+    const nextState = !newsletterEnabled;
+    setNewsletterEnabled(nextState);
+    await updateUserProfile({ newsletter: nextState });
+  };
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     {
@@ -294,15 +348,57 @@ function AccountDashboard({
           {/* Content */}
           <div className="flex-1">
             {tab === 'profile' && (
-              <div className="bg-white border border-gray-100 p-8 space-y-6 animate-fade-in">
-                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Il tuo profilo</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InfoField label="Nome" value={user.name} />
-                  <InfoField label="Cognome" value={user.surname || '-'} />
-                  <InfoField label="Email" value={user.email} />
-                  <InfoField label="Telefono" value={user.phone || 'Non specificato'} />
-                  <InfoField label="Ruolo" value={user.role === 'admin' ? 'Amministratore' : 'Cliente'} />
-                </div>
+              <div className="bg-white border border-gray-100 p-8 space-y-8 animate-fade-in">
+                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Dati Personali</h2>
+                
+                <form onSubmit={handleProfileSave} className="space-y-6 max-w-xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormInput
+                      label="Nome"
+                      name="name"
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      required
+                    />
+                    <FormInput
+                      label="Cognome"
+                      name="surname"
+                      value={profileForm.surname}
+                      onChange={(e) => setProfileForm({ ...profileForm, surname: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <FormInput
+                    label="Email (non modificabile)"
+                    name="email"
+                    type="email"
+                    value={user.email}
+                    disabled
+                    className="bg-gray-100 cursor-not-allowed opacity-75"
+                  />
+                  <FormInput
+                    label="Numero di Telefono (+39 ...)"
+                    name="phone"
+                    type="tel"
+                    placeholder="+39 333 1234567"
+                    pattern="^[+0-9\s-]{6,20}$"
+                    title="Inserisci un numero di telefono valido (es. +39 333 1234567)"
+                    value={profileForm.phone}
+                    onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                  />
+
+                  {profileMessage && (
+                    <p className={`text-xs font-bold uppercase tracking-widest p-3 rounded-sm ${
+                      profileMessage.includes('successo') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}>
+                      {profileMessage}
+                    </p>
+                  )}
+
+                  <ButtonCustom type="submit" disabled={isSavingProfile}>
+                    {isSavingProfile ? 'Salvataggio...' : 'Salva Modifiche Profilo'}
+                  </ButtonCustom>
+                </form>
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-100 mt-8">
@@ -334,34 +430,76 @@ function AccountDashboard({
             )}
 
             {tab === 'addresses' && (
-              <div className="bg-white border border-gray-100 p-8 animate-fade-in">
-                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Indirizzi di spedizione</h2>
-                <div className="border-2 border-dashed border-gray-200 p-8 text-center">
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Nessun indirizzo salvato</p>
-                  <ButtonCustom size="sm" variant="outline">+ Aggiungi indirizzo</ButtonCustom>
-                </div>
+              <div className="bg-white border border-gray-100 p-8 space-y-6 animate-fade-in">
+                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Indirizzo di Spedizione Predefinito</h2>
+                
+                <form onSubmit={handleAddressSave} className="space-y-6 max-w-xl">
+                  <FormInput
+                    label="Indirizzo (Via, Piazza, Numero Civico)"
+                    name="address"
+                    value={addressForm.address}
+                    onChange={(e) => setAddressForm({ ...addressForm, address: e.target.value })}
+                    required
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormInput
+                      label="Città"
+                      name="city"
+                      value={addressForm.city}
+                      onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                      required
+                    />
+                    <FormInput
+                      label="Codice Postale (CAP)"
+                      name="zip"
+                      value={addressForm.zip}
+                      onChange={(e) => setAddressForm({ ...addressForm, zip: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  {addressMessage && (
+                    <p className={`text-xs font-bold uppercase tracking-widest p-3 rounded-sm ${
+                      addressMessage.includes('successo') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}>
+                      {addressMessage}
+                    </p>
+                  )}
+
+                  <ButtonCustom type="submit" disabled={isSavingAddress}>
+                    {isSavingAddress ? 'Salvataggio...' : 'Salva Indirizzo Spedizione'}
+                  </ButtonCustom>
+                </form>
               </div>
             )}
 
             {tab === 'settings' && (
               <div className="bg-white border border-gray-100 p-8 space-y-8 animate-fade-in">
-                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Impostazioni</h2>
+                <h2 className="text-xl font-display uppercase tracking-widest mb-6">Impostazioni Account</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between py-4 border-b border-gray-50">
                     <div>
-                      <p className="text-sm font-bold">Newsletter</p>
-                      <p className="text-xs text-gray-400">Ricevi aggiornamenti e offerte esclusive</p>
+                      <p className="text-sm font-bold">Iscrizione Newsletter</p>
+                      <p className="text-xs text-gray-400">Ricevi anteprime e promozioni riservate agli iscritti</p>
                     </div>
-                    <button className="w-12 h-6 bg-brand-rust rounded-full relative">
-                      <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-transform" />
+                    <button
+                      type="button"
+                      onClick={handleNewsletterToggle}
+                      className={`w-14 h-7 rounded-full relative transition-colors ${
+                        newsletterEnabled ? 'bg-brand-rust' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
+                        newsletterEnabled ? 'right-1' : 'left-1'
+                      }`} />
                     </button>
                   </div>
                   <div className="flex items-center justify-between py-4 border-b border-gray-50">
                     <div>
-                      <p className="text-sm font-bold">Lingua</p>
-                      <p className="text-xs text-gray-400">Seleziona la lingua dell&apos;interfaccia</p>
+                      <p className="text-sm font-bold">Lingua e Regione</p>
+                      <p className="text-xs text-gray-400">Lingua ufficiale dell&apos;interfaccia</p>
                     </div>
-                    <span className="text-xs font-bold uppercase tracking-widest text-brand-rust">Italiano</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand-rust">Italiano (IT)</span>
                   </div>
                 </div>
                 <div className="pt-6 border-t border-gray-100">

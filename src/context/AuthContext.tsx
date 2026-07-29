@@ -18,6 +18,10 @@ export interface AuthUser {
   name: string;
   surname: string;
   phone: string;
+  address?: string;
+  city?: string;
+  zip?: string;
+  newsletter?: boolean;
   role: 'customer' | 'admin';
 }
 
@@ -28,6 +32,7 @@ interface AuthContextType {
   register: (data: { email: string; password: string; name: string; surname: string; phone?: string; newsletter?: boolean }) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   loginWithApple: () => Promise<{ success: boolean; error?: string }>;
+  updateUserProfile: (updates: Partial<AuthUser>) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -54,6 +59,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name: data.name || fbUser.displayName?.split(' ')[0] || 'Utente',
                 surname: data.surname || fbUser.displayName?.split(' ').slice(1).join(' ') || '',
                 phone: data.phone || '',
+                address: data.address || '',
+                city: data.city || '',
+                zip: data.zip || '',
+                newsletter: !!data.newsletter,
                 role: data.role || (fbUser.email === 'admin@sauilmoro.it' ? 'admin' : 'customer'),
               };
               setUser(profile);
@@ -233,6 +242,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUserProfile = async (updates: Partial<AuthUser>) => {
+    try {
+      const updatedUser = user ? { ...user, ...updates } : null;
+      if (updatedUser) {
+        setUser(updatedUser);
+        localStorage.setItem('sau-auth-user', JSON.stringify(updatedUser));
+      }
+      if (auth?.currentUser && db) {
+        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        await setDoc(userDocRef, updates, { merge: true });
+      }
+      return { success: true };
+    } catch (err: any) {
+      console.error('Error updating user profile:', err);
+      return { success: false, error: err.message || 'Errore durante l\'aggiornamento del profilo' };
+    }
+  };
+
   const logout = async () => {
     if (auth) {
       await signOut(auth);
@@ -250,6 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         loginWithGoogle,
         loginWithApple,
+        updateUserProfile,
         logout,
         isAdmin: user?.role === 'admin',
       }}

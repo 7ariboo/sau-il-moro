@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
 import Link from 'next/link';
@@ -10,6 +11,7 @@ type CheckoutStep = 'data' | 'shipping' | 'payment';
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
+  const { user } = useAuth();
   const [step, setStep] = useState<CheckoutStep>('data');
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,6 +23,21 @@ export default function CheckoutPage() {
     zip: '',
     phone: '',
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || prev.email,
+        name: user.name || prev.name,
+        surname: user.surname || prev.surname,
+        phone: user.phone || prev.phone,
+        address: user.address || prev.address,
+        city: user.city || prev.city,
+        zip: user.zip || prev.zip,
+      }));
+    }
+  }, [user]);
 
   const shippingCost = subtotal >= 150 ? 0 : 15;
   const total = subtotal + shippingCost;
@@ -143,7 +160,17 @@ export default function CheckoutPage() {
                   <h2 className="text-xl font-display uppercase tracking-widest">Informazioni di Contatto</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Input label="Email" name="email" type="email" value={formData.email} onChange={handleInputChange} required />
-                    <Input label="Telefono" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} required />
+                    <Input
+                      label="Telefono (+39 ...)"
+                      name="phone"
+                      type="tel"
+                      placeholder="+39 333 1234567"
+                      pattern="^[+0-9\s-]{6,20}$"
+                      title="Inserisci un numero di telefono valido (es. +39 333 1234567)"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                    />
                     <Input label="Nome" name="name" value={formData.name} onChange={handleInputChange} required />
                     <Input label="Cognome" name="surname" value={formData.surname} onChange={handleInputChange} required />
                   </div>
