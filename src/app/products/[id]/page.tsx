@@ -136,14 +136,14 @@ export default function ProductPage() {
               )}
             </div>
 
-            {/* Thumbnails — scrollable on mobile */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {/* Thumbnails — grid on desktop, scrollable flex on mobile */}
+            <div className="flex gap-2 overflow-x-auto md:grid md:grid-cols-5 lg:grid-cols-6 md:overflow-y-auto max-h-72 pb-2 pr-1 scrollbar-hide">
               {product.images.map((img, i) => (
                 <button
                   key={img}
                   onClick={() => setActiveImg(i)}
-                  className={`relative shrink-0 w-[72px] h-[72px] lg:w-20 lg:h-20 bg-white border-2 transition-all duration-200 ${
-                    i === activeImg ? 'border-brand-rust shadow-md' : 'border-transparent hover:border-brand-rust/30'
+                  className={`relative shrink-0 w-[72px] h-[72px] md:w-auto md:aspect-square bg-white border-2 transition-all duration-200 ${
+                    i === activeImg ? 'border-brand-rust shadow-md ring-2 ring-brand-rust/20' : 'border-transparent hover:border-brand-rust/40'
                   }`}
                 >
                   <Image
@@ -151,7 +151,7 @@ export default function ProductPage() {
                     alt={`${product.name} — miniatura ${i + 1}`}
                     fill
                     className="object-cover"
-                    sizes="80px"
+                    sizes="100px"
                   />
                 </button>
               ))}
