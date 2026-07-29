@@ -188,7 +188,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
     } catch (err: any) {
-      return { success: false, error: err.message || 'Errore durante l\'accesso con Google' };
+      console.error('Google Auth Error:', err);
+      let message = 'Errore durante l\'accesso con Google';
+      if (err.code === 'auth/unauthorized-domain') {
+        message = 'Dominio non autorizzato su Firebase. Aggiungi sauilmoro.com e vercel.app in Firebase Console → Authentication → Impostazioni → Domini autorizzati.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        message = 'Google Login non è abilitato su Firebase. Vai in Firebase Console → Authentication → Metodo di accesso e abilita Google.';
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        message = 'Finestra di accesso chiusa prima di completare il login.';
+      }
+      return { success: false, error: message };
     }
   };
 
@@ -211,7 +220,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
     } catch (err: any) {
-      return { success: false, error: err.message || 'Errore durante l\'accesso con Apple' };
+      console.error('Apple Auth Error:', err);
+      let message = 'Errore durante l\'accesso con Apple';
+      if (err.code === 'auth/unauthorized-domain') {
+        message = 'Dominio non autorizzato su Firebase. Aggiungi sauilmoro.com in Firebase Console → Authentication → Domini autorizzati.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        message = 'Apple Login non abilitato su Firebase Console (richiede Apple Services ID).';
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        message = 'Finestra di accesso chiusa prima di completare il login.';
+      }
+      return { success: false, error: message };
     }
   };
 
