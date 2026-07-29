@@ -61,13 +61,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
         onTouchEnd={handleTouchEnd}
       >
         <Link href={`/products/${id}`}>
-          <Image
-            src={allImages[activeIdx]}
-            alt={name}
-            fill
-            className="object-cover p-2 transition-transform duration-700 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {allImages.map((img, idx) => (
+            <Image
+              key={img}
+              src={img}
+              alt={`${name} — foto ${idx + 1}`}
+              fill
+              className={`object-cover p-2 transition-all duration-500 group-hover:scale-105 ${
+                idx === activeIdx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={80}
+            />
+          ))}
         </Link>
 
         {/* Arrows on hover (desktop) */}

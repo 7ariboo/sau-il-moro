@@ -152,6 +152,8 @@ export default function ProductPage() {
                     fill
                     className="object-cover"
                     sizes="100px"
+                    quality={60}
+                    loading="lazy"
                   />
                 </button>
               ))}
