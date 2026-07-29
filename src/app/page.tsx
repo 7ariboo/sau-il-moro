@@ -62,27 +62,6 @@ export default function Home() {
             sizes="100vw"
           />
         </div>
-
-        {/* Bottone in alto a sinistra */}
-        <div className="absolute top-6 left-6 md:top-10 md:left-12 z-10">
-          <Link href="/category/ferro">
-            <button
-              className="font-display font-bold uppercase text-white transition-all active:scale-95 hover:scale-105"
-              style={{
-                backgroundColor: '#b34624',
-                borderRadius: '9999px',
-                padding: '12px 32px',
-                fontSize: 'clamp(0.85rem, 3.5vw, 0.95rem)',
-                letterSpacing: '0.06em',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 4px 20px rgba(179,70,36,0.6)',
-              }}
-            >
-              CHI SONO?
-            </button>
-          </Link>
-        </div>
       </section>
 
       {/* Nuove Collezioni */}
