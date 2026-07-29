@@ -72,14 +72,14 @@ export default function Home() {
             <p className="text-sm text-deep-black/40 uppercase tracking-widest font-bold mt-2">Esplora le categorie dell&apos;artigianato sardo</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CATEGORIES.map((cat) => (
+        <div className="max-w-md">
+          {CATEGORIES.filter(cat => cat.slug === 'ferro').map((cat) => (
             <CategoryCard
               key={cat.id}
               id={cat.slug}
               name={cat.name}
               image={cat.image}
-              imagePosition={cat.slug === 'carne' ? 'object-[center_35%]' : 'object-center'}
+              imagePosition="object-center"
             />
           ))}
         </div>
@@ -95,7 +95,7 @@ export default function Home() {
             <span className="text-lg font-display font-bold uppercase">Sau Il Moro</span>
           </div>
           <nav className="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.2em]">
-            {CATEGORIES.map(cat => (
+            {CATEGORIES.filter(cat => cat.slug === 'ferro').map(cat => (
               <Link
                 key={cat.slug}
                 href={`/category/${cat.slug}`}
