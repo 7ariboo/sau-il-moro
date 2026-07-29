@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
+import { ItalianCityAutocomplete } from '@/components/ItalianCityAutocomplete';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -185,7 +186,11 @@ export default function CheckoutPage() {
                     <div className="md:col-span-2">
                       <Input label="Indirizzo" name="address" value={formData.address} onChange={handleInputChange} required />
                     </div>
-                    <Input label="Città" name="city" value={formData.city} onChange={handleInputChange} required />
+                    <ItalianCityAutocomplete
+                      cityValue={formData.city}
+                      zipValue={formData.zip}
+                      onSelect={(c, z) => setFormData(prev => ({ ...prev, city: c, zip: z }))}
+                    />
                     <Input label="CAP" name="zip" value={formData.zip} onChange={handleInputChange} required />
                   </div>
                   <div className="flex gap-4">
