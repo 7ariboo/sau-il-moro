@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   id: string;
+  slug?: string;
   name: string;
   price: number;
   image?: string;
@@ -18,8 +19,9 @@ interface ProductCardProps {
   darkTheme?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, images, isWow, material, showCart, compareAtPrice, darkTheme }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ id, slug, name, price, image, images, isWow, material, showCart, compareAtPrice, darkTheme }) => {
   const { addItem } = useCart();
+  const productSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   const allImages = images && images.length > 0 ? images : [image || '/images/ferro.png'];
   const [activeIdx, setActiveIdx] = useState(0);
   const touchStartX = useRef(0);
@@ -60,7 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <Link href={`/products/${id}`}>
+        <Link href={`/products/${productSlug}`}>
           {allImages.map((img, idx) => (
             <Image
               key={img}
@@ -138,7 +140,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
 
       {/* Info */}
       <div className="flex flex-col gap-1">
-        <Link href={`/products/${id}`}>
+        <Link href={`/products/${productSlug}`}>
           <h3 className={`text-base font-display font-bold uppercase tracking-tight transition-colors ${
             darkTheme ? 'text-white hover:text-brand-rust' : 'text-deep-black hover:text-brand-rust'
           }`}>
