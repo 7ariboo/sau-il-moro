@@ -38,9 +38,15 @@ export const Footer: React.FC = () => {
               <ul className="space-y-2.5 text-xs font-bold uppercase tracking-wider text-deep-black/50">
                 {CATEGORIES.map(cat => (
                   <li key={cat.slug}>
-                    <Link href={`/category/${cat.slug}`} className="hover:text-brand-rust transition-colors">
-                      {cat.name}
-                    </Link>
+                    {cat.slug === 'ferro' ? (
+                      <Link href={`/category/${cat.slug}`} className="hover:text-brand-rust transition-colors">
+                        {cat.name}
+                      </Link>
+                    ) : (
+                      <span className="text-gray-300 cursor-not-allowed">
+                        {cat.name} <span className="text-[9px] text-gray-400 font-normal lowercase">(prossimamente)</span>
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

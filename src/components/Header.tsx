@@ -9,9 +9,6 @@ import { CartDrawer } from './CartDrawer';
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Ferro', href: '/category/ferro' },
-  { label: 'Legno', href: '/category/legno' },
-  { label: 'Terra', href: '/category/terra' },
-  { label: 'Carne', href: '/category/carne' },
 ];
 
 export const Header: React.FC = () => {

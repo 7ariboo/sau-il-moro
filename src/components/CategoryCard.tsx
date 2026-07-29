@@ -11,6 +11,32 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ id, name, image, imagePosition = 'object-center' }) => {
+  const isAvailable = id === 'ferro';
+
+  if (!isAvailable) {
+    return (
+      <div className="relative block aspect-[3/4] overflow-hidden rounded-lg bg-deep-black shadow-lg cursor-not-allowed opacity-85 select-none">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className={`object-cover ${imagePosition} filter grayscale-[30%] brightness-75`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/60" />
+
+        <div className="absolute top-6 left-6 right-6">
+          <h3 className="text-pure-white/90 text-3xl font-display tracking-widest uppercase">
+            {name}
+          </h3>
+          <div className="mt-3 inline-block bg-brand-rust/90 text-white text-[9px] font-bold uppercase tracking-[0.25em] px-3 py-1 rounded-sm shadow-md">
+            Prossimamente
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Link href={`/category/${id}`} className="group relative block aspect-[3/4] overflow-hidden rounded-lg bg-deep-black shadow-lg">
       <Image
