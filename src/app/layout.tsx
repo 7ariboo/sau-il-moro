@@ -22,11 +22,11 @@ const natronSans = localFont({
 export const metadata: Metadata = {
   title: "Sau Il Moro | Artigianato Sardo di Lusso",
   description: "E-commerce di lusso rustico che celebra l'artigianato sardo: ferro, legno, terra e carne.",
-  icons: {
-    icon: '/images/firma.png',
-    shortcut: '/images/firma.png',
-    apple: '/images/firma.png',
-  },
+  icons: [
+    { rel: 'icon', url: '/images/firma.png' },
+    { rel: 'shortcut icon', url: '/images/firma.png' },
+    { rel: 'apple-touch-icon', url: '/images/firma.png' },
+  ],
 };
 
 export default function RootLayout({
