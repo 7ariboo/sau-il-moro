@@ -203,7 +203,7 @@ export function getProductBySlug(slug: string): Product | undefined {
 }
 
 export function getProductById(id: string): Product | undefined {
-  return PRODUCTS.find(p => p.id === id);
+  return PRODUCTS.find(p => p.id === id || p.slug === id);
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {

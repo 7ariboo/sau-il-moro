@@ -129,7 +129,7 @@ export default function Home() {
               Valore 424€, tuo a soli 360€ con uno sconto speciale di 64€.
             </p>
             <div className="mt-8">
-              <Link href="/products/bundle-sau-il-moro">
+              <Link href="/products/5">
                 <ButtonCustom variant="outline" className="!text-pure-white !border-pure-white/40 hover:!bg-brand-rust hover:!border-brand-rust">
                   Scopri il Bundle (360 €)
                 </ButtonCustom>
