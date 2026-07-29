@@ -12,8 +12,8 @@ export const Footer: React.FC = () => {
           {/* Brand & P.IVA */}
           <div className="flex flex-col gap-4 max-w-sm">
             <div className="flex items-center gap-4">
-              <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-brand-rust shrink-0">
-                <Image src="/images/Sfondo/coltello.png" alt="Sau Il Moro" fill className="object-cover" sizes="56px" />
+              <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-brand-rust shrink-0 bg-white/50 p-1">
+                <Image src="/images/firma.png" alt="Sau Il Moro" fill className="object-contain" sizes="56px" />
               </div>
               <div>
                 <h3 className="text-2xl font-display font-bold uppercase tracking-tight text-deep-black">Sau Il Moro</h3>
