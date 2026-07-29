@@ -106,8 +106,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Secondary Nav Bar */}
-      <section className="bg-white border-y border-deep-black/5">
+      {/* Secondary Nav Bar — solo desktop */}
+      <section className="hidden md:block bg-white border-y border-deep-black/5">
         <div className="container mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-brand-rust">

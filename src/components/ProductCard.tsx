@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -19,15 +19,49 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, images, isWow, material, showCart, compareAtPrice }) => {
   const { addItem } = useCart();
-  const imgSrc = image || (images && images[0]) || '/images/ferro.png';
+  const allImages = images && images.length > 0 ? images : [image || '/images/ferro.png'];
+  const [activeIdx, setActiveIdx] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const totalImages = allImages.length;
+
+  const goNext = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setActiveIdx(prev => (prev + 1) % totalImages);
+  };
+  const goPrev = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setActiveIdx(prev => (prev - 1 + totalImages) % totalImages);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goNext();
+      else goPrev();
+    }
+  };
 
   return (
     <div className="group relative flex flex-col">
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-white rounded-sm shadow-sm hover:shadow-xl transition-shadow duration-500 mb-4">
+      <div
+        className="relative aspect-square overflow-hidden bg-white rounded-sm shadow-sm hover:shadow-xl transition-shadow duration-500 mb-4 select-none"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <Link href={`/products/${id}`}>
           <Image
-            src={imgSrc}
+            src={allImages[activeIdx]}
             alt={name}
             fill
             className="object-cover p-2 transition-transform duration-700 group-hover:scale-105"
@@ -35,21 +69,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
           />
         </Link>
 
+        {/* Arrows on hover (desktop) */}
+        {totalImages > 1 && (
+          <>
+            <button
+              onClick={goPrev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              aria-label="Foto precedente"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button
+              onClick={goNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              aria-label="Foto successiva"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </>
+        )}
+
+        {/* Dot indicators */}
+        {totalImages > 1 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {allImages.slice(0, 5).map((_, i) => (
+              <span
+                key={i}
+                className={`block w-1.5 h-1.5 rounded-full transition-all ${
+                  i === activeIdx ? 'bg-brand-rust scale-125' : 'bg-black/20'
+                }`}
+              />
+            ))}
+            {totalImages > 5 && (
+              <span className="block w-1.5 h-1.5 rounded-full bg-black/10" />
+            )}
+          </div>
+        )}
+
         {isWow && (
-          <div className="absolute top-3 left-3 bg-brand-rust text-pure-white text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest">
+          <div className="absolute top-3 left-3 bg-brand-rust text-pure-white text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest z-10">
             WOW
           </div>
         )}
 
         {compareAtPrice && (
-          <div className="absolute top-3 right-3 bg-deep-black text-pure-white text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest">
+          <div className="absolute top-3 right-3 bg-deep-black text-pure-white text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest z-10">
             -{Math.round((1 - price / compareAtPrice) * 100)}%
           </div>
         )}
 
         {showCart && (
           <button
-            onClick={() => addItem({ id, name, price, image: imgSrc }, 1)}
+            onClick={() => addItem({ id, name, price, image: allImages[0] }, 1)}
             className="absolute bottom-3 left-3 w-11 h-11 bg-brand-rust text-pure-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 hover:bg-deep-black transition-all z-10"
             aria-label="Aggiungi al carrello"
           >
@@ -78,3 +149,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
     </div>
   );
 };
+

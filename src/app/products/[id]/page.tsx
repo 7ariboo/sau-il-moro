@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
@@ -16,6 +16,11 @@ export default function ProductPage() {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
+
+  // Touch swipe state
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const product = getProductById(id);
 
@@ -31,8 +36,26 @@ export default function ProductPage() {
     );
   }
 
+  const totalImages = product.images.length;
   const category = getCategoryBySlug(product.category);
   const relatedProducts = getProductsByCategory(product.category).filter(p => p.id !== id).slice(0, 3);
+
+  const goNext = () => setActiveImg(prev => (prev + 1) % totalImages);
+  const goPrev = () => setActiveImg(prev => (prev - 1 + totalImages) % totalImages);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goNext();
+      else goPrev();
+    }
+  };
 
   const handleAddToCart = () => {
     addItem({
@@ -64,37 +87,73 @@ export default function ProductPage() {
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
           {/* Image Gallery */}
           <div className="flex-1 space-y-4">
-            <div className="relative aspect-square bg-white shadow-lg overflow-hidden">
+            {/* Main image — swipeable */}
+            <div
+              className="relative aspect-square bg-white shadow-lg overflow-hidden select-none"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <Image
-                src={product.images[0]}
-                alt={product.name}
+                src={product.images[activeImg]}
+                alt={`${product.name} — foto ${activeImg + 1}`}
                 fill
-                className="object-cover"
+                className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
               />
+
+              {/* Arrow buttons */}
+              <button
+                onClick={goPrev}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-10"
+                aria-label="Foto precedente"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button
+                onClick={goNext}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-10"
+                aria-label="Foto successiva"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              {/* Counter */}
+              <div className="absolute bottom-3 right-3 bg-black/50 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm z-10">
+                {activeImg + 1} / {totalImages}
+              </div>
+
               {product.isWow && (
-                <div className="absolute top-4 left-4 bg-brand-rust text-pure-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
+                <div className="absolute top-4 left-4 bg-brand-rust text-pure-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest z-10">
                   BESTSELLER
                 </div>
               )}
               {product.compareAtPrice && (
-                <div className="absolute top-4 right-4 bg-deep-black text-pure-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
+                <div className="absolute top-4 right-4 bg-deep-black text-pure-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest z-10">
                   -{Math.round((1 - product.price / product.compareAtPrice) * 100)}%
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className={`relative aspect-square bg-white border-2 transition-colors cursor-pointer ${i === 1 ? 'border-brand-rust' : 'border-transparent hover:border-brand-rust/30'}`}>
+
+            {/* Thumbnails — scrollable on mobile */}
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {product.images.map((img, i) => (
+                <button
+                  key={img}
+                  onClick={() => setActiveImg(i)}
+                  className={`relative shrink-0 w-[72px] h-[72px] lg:w-20 lg:h-20 bg-white border-2 transition-all duration-200 ${
+                    i === activeImg ? 'border-brand-rust shadow-md' : 'border-transparent hover:border-brand-rust/30'
+                  }`}
+                >
                   <Image
-                    src={product.images[0]}
-                    alt={`${product.name} vista ${i}`}
+                    src={img}
+                    alt={`${product.name} — miniatura ${i + 1}`}
                     fill
                     className="object-cover"
-                    sizes="15vw"
+                    sizes="80px"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -115,7 +174,7 @@ export default function ProductPage() {
             </div>
 
             <div className="mb-10 space-y-6">
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                 {product.description}
               </p>
 

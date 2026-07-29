@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { CookieBanner } from "@/components/CookieBanner";
 
 const natronDisplay = localFont({
   src: "../../public/fonts/NATRONRough-Bold.otf",
@@ -34,6 +35,7 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               {children}
+              <CookieBanner />
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
@@ -41,3 +43,4 @@ export default function RootLayout({
     </html>
   );
 }
+

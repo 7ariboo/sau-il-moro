@@ -42,4 +42,10 @@ body {
   .clip-diagonal-reverse {
     clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
 }
