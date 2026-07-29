@@ -82,6 +82,43 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         {/* Footer */}
         {items.length > 0 && (
           <div className="p-8 bg-white border-t border-gray-100 space-y-6">
+            {/* Free Shipping Progress Bar */}
+            {subtotal < 150 ? (
+              <div className="bg-brand-rust/5 border border-brand-rust/20 p-4 rounded-sm space-y-2">
+                <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+                  <span className="text-deep-black flex items-center gap-1.5">
+                    🚚 Spedizione Gratuita
+                  </span>
+                  <span className="text-brand-rust font-bold">
+                    Mancano {150 - subtotal} €
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-brand-rust transition-all duration-700 rounded-full"
+                    style={{ width: `${Math.min(100, Math.round((subtotal / 150) * 100))}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-gray-500 font-medium">
+                  Aggiungi ancora <strong className="text-brand-rust">{150 - subtotal} €</strong> per la consegna gratuita!
+                </p>
+              </div>
+            ) : (
+              <div className="bg-green-50 border border-green-200 p-4 rounded-sm flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
+                  ✓
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-green-800">
+                    Spedizione Gratuita Sbloccata!
+                  </p>
+                  <p className="text-[10px] text-green-700">
+                    Hai diritto alla consegna gratuita in 24/48h in tutta Italia.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                 <span className="text-gray-400">Subtotale</span>
@@ -89,18 +126,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
               </div>
               <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                 <span className="text-gray-400">Spedizione</span>
-                <span>{shipping === 0 ? 'GRATIS' : `${shipping} €`}</span>
+                <span>{shipping === 0 ? <strong className="text-green-600">GRATIS</strong> : `${shipping} €`}</span>
               </div>
-              {shipping > 0 && (
-                <p className="text-[10px] text-brand-rust italic">Mancano {150 - subtotal}€ alla spedizione gratuita!</p>
-              )}
               <div className="flex justify-between text-lg font-display border-t border-gray-50 pt-4">
                 <span>Totale</span>
-                <span className="text-brand-rust">{total} €</span>
+                <span className="text-brand-rust font-bold">{total} €</span>
               </div>
             </div>
             <Link href="/checkout" onClick={onClose}>
-              <ButtonCustom className="w-full">Procedi al Checkout</ButtonCustom>
+              <ButtonCustom className="w-full h-14 font-bold tracking-widest uppercase">
+                Procedi al Checkout &rarr;
+              </ButtonCustom>
             </Link>
           </div>
         )}

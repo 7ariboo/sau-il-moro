@@ -179,10 +179,10 @@ export default function CheckoutPage() {
         <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-3xl md:text-4xl font-display uppercase tracking-wider">
-              Checkout Rapido
+              Checkout
             </h1>
             <p className="text-xs font-bold uppercase tracking-widest text-brand-rust mt-1">
-              ⚡ Acquisto in 1 pagina — Spedizione in tutta Italia
+              Spedizione in tutta Italia — Consegna in 24/48h
             </p>
           </div>
           <Link href="/" className="text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-brand-rust">

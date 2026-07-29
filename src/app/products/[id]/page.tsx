@@ -208,46 +208,64 @@ export default function ProductPage() {
                 </span>
               </div>
 
-              {/* Free shipping badge */}
-              {product.price >= 150 && (
-                <div className="flex items-center gap-2 bg-brand-rust/5 border border-brand-rust/10 px-4 py-3 rounded-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-rust"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/></svg>
-                  <span className="text-xs font-bold uppercase tracking-widest text-brand-rust">Spedizione gratuita</span>
+              {/* Free shipping dynamic badge */}
+              {(product.price * quantity) >= 150 ? (
+                <div className="flex items-center gap-3 bg-green-50 border border-green-200 px-4 py-3 rounded-sm">
+                  <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                    ✓
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-green-800">
+                    Spedizione Gratuita Inclusa per questo ordine!
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between bg-brand-rust/5 border border-brand-rust/20 px-4 py-3 rounded-sm">
+                  <span className="text-xs font-bold uppercase tracking-wider text-deep-black flex items-center gap-2">
+                    <span>🚚</span> Spedizione Gratuita da 150€
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-rust">
+                    Mancano solo {150 - (product.price * quantity)} €
+                  </span>
                 </div>
               )}
             </div>
 
             {/* Actions */}
-            <div className="space-y-3">
+            <div className="space-y-4">
+              {/* Primary Fast Action: ACQUISTA ORA */}
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                disabled={!product.inStock}
+                className="w-full h-16 bg-brand-rust text-white font-bold uppercase tracking-[0.15em] text-sm rounded-sm shadow-lg hover:bg-brand-rust/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>ACQUISTA ORA — {product.price * quantity} €</span>
+              </button>
+
+              {/* Secondary Action: AGGIUNGI AL CARRELLO */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex items-center border-2 border-deep-black h-14">
+                <div className="flex items-center border-2 border-deep-black h-14 bg-white">
                   <button
+                    type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-4 hover:text-brand-rust transition-colors"
+                    className="px-4 hover:text-brand-rust transition-colors font-bold text-lg"
                   >-</button>
-                  <span className="flex-1 text-center font-bold min-w-[3rem]">{quantity}</span>
+                  <span className="flex-1 text-center font-bold min-w-[3rem] text-sm">{quantity}</span>
                   <button
+                    type="button"
                     onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                    className="px-4 hover:text-brand-rust transition-colors"
+                    className="px-4 hover:text-brand-rust transition-colors font-bold text-lg"
                   >+</button>
                 </div>
                 <ButtonCustom
-                  className="flex-1 h-14"
+                  variant="outline"
+                  className="flex-1 h-14 !border-2 !border-deep-black !text-deep-black hover:!bg-deep-black hover:!text-white font-bold tracking-widest text-xs uppercase transition-colors"
                   onClick={handleAddToCart}
                   disabled={!product.inStock}
                 >
-                  {addedToCart ? '✓ Aggiunto al Carrello' : 'Aggiungi al carrello'}
+                  {addedToCart ? '✓ Aggiunto al Carrello' : '🛒 Aggiungi al carrello'}
                 </ButtonCustom>
               </div>
-
-              <ButtonCustom
-                variant="outline"
-                className="w-full h-14 !bg-brand-rust !text-white !border-brand-rust hover:!bg-brand-rust/90 shadow-md font-bold uppercase tracking-widest text-xs"
-                onClick={handleBuyNow}
-                disabled={!product.inStock}
-              >
-                ⚡ Acquista Ora (Express Checkout in 1 Click)
-              </ButtonCustom>
             </div>
 
             {/* Tags */}
