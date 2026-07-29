@@ -14,7 +14,7 @@ export default function ProductPage() {
   const router = useRouter();
   const id = typeof params?.id === 'string' ? params.id : '1';
 
-  const { addItem } = useCart();
+  const { addItem, subtotal } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
@@ -208,8 +208,8 @@ export default function ProductPage() {
                 </span>
               </div>
 
-              {/* Free shipping dynamic badge */}
-              {(product.price * quantity) >= 150 ? (
+              {/* Free shipping dynamic badge synced with Cart */}
+              {(subtotal + product.price * quantity) >= 150 ? (
                 <div className="flex items-center gap-3 bg-green-50 border border-green-200 px-4 py-3 rounded-sm">
                   <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
                     ✓
@@ -219,12 +219,12 @@ export default function ProductPage() {
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center justify-between bg-brand-rust/5 border border-brand-rust/20 px-4 py-3 rounded-sm">
+                <div className="flex items-center justify-between bg-[#b34624]/5 border border-[#b34624]/20 px-4 py-3 rounded-sm">
                   <span className="text-xs font-bold uppercase tracking-wider text-deep-black flex items-center gap-2">
                     <span>🚚</span> Spedizione Gratuita da 150€
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-rust">
-                    Mancano solo {150 - (product.price * quantity)} €
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#b34624]">
+                    Mancano solo {150 - (subtotal + product.price * quantity)} €
                   </span>
                 </div>
               )}

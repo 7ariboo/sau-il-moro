@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { CartDrawer } from './CartDrawer';
+import { FreeShippingBanner } from './FreeShippingBanner';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -188,6 +189,11 @@ export const Header: React.FC = () => {
           className="fixed inset-0 bg-black/30 -z-10"
           onClick={() => setIsMobileMenuOpen(false)}
         />
+      </div>
+
+      {/* Dynamic Global Free Shipping Progress Banner */}
+      <div className="fixed top-[100px] left-0 right-0 z-40">
+        <FreeShippingBanner />
       </div>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
