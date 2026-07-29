@@ -15,9 +15,10 @@ interface ProductCardProps {
   badge?: string;
   showCart?: boolean;
   compareAtPrice?: number;
+  darkTheme?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, images, isWow, material, showCart, compareAtPrice }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, images, isWow, material, showCart, compareAtPrice, darkTheme }) => {
   const { addItem } = useCart();
   const allImages = images && images.length > 0 ? images : [image || '/images/ferro.png'];
   const [activeIdx, setActiveIdx] = useState(0);
@@ -132,17 +133,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image
       {/* Info */}
       <div className="flex flex-col gap-1">
         <Link href={`/products/${id}`}>
-          <h3 className="text-base font-display font-bold uppercase tracking-tight text-deep-black hover:text-brand-rust transition-colors">
+          <h3 className={`text-base font-display font-bold uppercase tracking-tight transition-colors ${
+            darkTheme ? 'text-white hover:text-brand-rust' : 'text-deep-black hover:text-brand-rust'
+          }`}>
             {name}
           </h3>
         </Link>
         {material && (
-          <p className="text-[10px] text-deep-black/40 uppercase tracking-widest font-bold">{material}</p>
+          <p className={`text-[10px] uppercase tracking-widest font-bold ${
+            darkTheme ? 'text-white/60' : 'text-deep-black/40'
+          }`}>{material}</p>
         )}
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-lg font-display text-deep-black font-bold">{price} €</span>
+          <span className={`text-lg font-display font-bold ${
+            darkTheme ? 'text-white' : 'text-deep-black'
+          }`}>{price} €</span>
           {compareAtPrice && (
-            <span className="text-sm font-display text-deep-black/30 line-through">{compareAtPrice} €</span>
+            <span className={`text-sm font-display line-through ${
+              darkTheme ? 'text-white/40' : 'text-deep-black/30'
+            }`}>{compareAtPrice} €</span>
           )}
         </div>
       </div>
