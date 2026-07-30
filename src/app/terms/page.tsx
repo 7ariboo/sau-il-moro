@@ -27,7 +27,7 @@ export default function TermsPage() {
               <strong>Near di Diana Gabriele</strong> (titolare del brand Sau Il Moro)<br />
               Partita IVA: <span className="font-mono text-brand-rust font-bold">14470190969</span><br />
               Sede Legale: Sardegna, Italia<br />
-              Email Assistenza Clienti: <a href="mailto:ordini@sauilmoro.it" className="text-brand-rust underline font-bold">ordini@sauilmoro.it</a>
+              Email Assistenza Clienti: <a href="mailto:ordini@sauilmoro.com" className="text-brand-rust underline font-bold">ordini@sauilmoro.com</a>
             </p>
           </section>
 
@@ -63,7 +63,7 @@ export default function TermsPage() {
               Ai sensi dell&apos;art. 52 del Codice del Consumo (D.Lgs. 206/2005) e della Direttiva UE 2011/83/UE, il cliente consumatore ha il diritto di recedere dal contratto di acquisto, senza indicarne le ragioni, entro <strong>14 (quattordici) giorni</strong> dalla ricezione dei beni.
             </p>
             <div className="p-4 bg-gray-50 border-l-4 border-brand-rust text-xs space-y-2">
-              <p><strong>Come esercitare il recesso:</strong> Invia un&apos;email a <a href="mailto:ordini@sauilmoro.it" className="text-brand-rust underline font-bold">ordini@sauilmoro.it</a> indicando il numero d&apos;ordine e la volontà di restituire il prodotto.</p>
+              <p><strong>Come esercitare il recesso:</strong> Invia un&apos;email a <a href="mailto:ordini@sauilmoro.com" className="text-brand-rust underline font-bold">ordini@sauilmoro.com</a> indicando il numero d&apos;ordine e la volontà di restituire il prodotto.</p>
               <p><strong>Restituzione:</strong> I prodotti devono essere restituiti integri, nella confezione originale e in perfetto stato di conservazione entro 14 giorni dalla comunicazione del recesso. Le spese dirette di spedizione per la restituzione sono a carico del cliente.</p>
               <p><strong>Rimborso:</strong> A ricezione del reso e verifica dell&apos;integrità, provvederemo al rimborso completo dell&apos;importo pagato sullo stesso metodo di pagamento utilizzato in fase d&apos;acquisto entro 5 giorni lavorativi.</p>
             </div>

@@ -36,7 +36,7 @@ export function getWelcomeEmailHtml(userName: string = 'Appassionato dell\'Artig
             </div>
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — P.IVA 14470190969 — info@sauilmoro.it</p>
+            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — P.IVA 14470190969 — info@sauilmoro.com</p>
           </div>
         </div>
       </body>
@@ -121,7 +121,7 @@ export function getOrderConfirmationEmailHtml(order: {
             ` : ''}
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — P.IVA 14470190969 — ordini@sauilmoro.it</p>
+            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — P.IVA 14470190969 — ordini@sauilmoro.com</p>
           </div>
         </div>
       </body>
@@ -160,7 +160,7 @@ export function getOrderProcessingEmailHtml(orderId: string, customerName: strin
             <p>Riceverai una successiva notifica via email non appena il pacco verrà affidato al corriere espresso per la spedizione.</p>
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — Sau Il Moro — ordini@sauilmoro.it</p>
+            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — Sau Il Moro — ordini@sauilmoro.com</p>
           </div>
         </div>
       </body>
@@ -210,7 +210,7 @@ export function getOrderShippedEmailHtml(
             <p>Ti ringraziamo ancora per aver scelto l'artigianato unico di Sau Il Moro!</p>
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — Sau Il Moro — ordini@sauilmoro.it</p>
+            <p>&copy; ${new Date().getFullYear()} Near di Diana Gabriele — Sau Il Moro — ordini@sauilmoro.com</p>
           </div>
         </div>
       </body>

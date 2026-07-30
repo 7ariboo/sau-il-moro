@@ -27,7 +27,7 @@ export const Footer: React.FC = () => {
               <p>Ragione Sociale: <span className="text-deep-black">Near di Diana Gabriele</span></p>
               <p>P.IVA: <span className="font-mono text-brand-rust">14470190969</span></p>
               <p>Sede Legale: Sardegna, Italia</p>
-              <p>Email: <a href="mailto:info@sauilmoro.it" className="hover:text-brand-rust transition-colors underline">info@sauilmoro.it</a></p>
+              <p>Email: <a href="mailto:info@sauilmoro.com" className="hover:text-brand-rust transition-colors underline">info@sauilmoro.com</a></p>
             </div>
           </div>
 
@@ -65,13 +65,14 @@ export const Footer: React.FC = () => {
             <div>
               <h4 className="text-xs font-bold uppercase tracking-[0.25em] mb-4 text-deep-black">Assistenza</h4>
               <ul className="space-y-2.5 text-xs font-bold uppercase tracking-wider text-deep-black/50 mb-4">
-                <li><a href="mailto:ordini@sauilmoro.it" className="hover:text-brand-rust transition-colors">ordini@sauilmoro.it</a></li>
+                <li><a href="mailto:ordini@sauilmoro.com" className="hover:text-brand-rust transition-colors">ordini@sauilmoro.com</a></li>
                 <li className="text-[11px] normal-case text-gray-400">Lun - Sab: 09:00 - 18:00</li>
               </ul>
               <div className="flex gap-2">
                 <a href="https://www.facebook.com/sauilmoro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Facebook">FB</a>
                 <a href="https://www.instagram.com/sauilmoro/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Instagram">IG</a>
-                <a href="mailto:info@sauilmoro.it" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Email">✉</a>
+                <a href="https://www.tiktok.com/@sauilmoro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="TikTok">TT</a>
+                <a href="mailto:info@sauilmoro.com" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Email">✉</a>
               </div>
             </div>
           </div>

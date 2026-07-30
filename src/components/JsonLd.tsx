@@ -24,7 +24,7 @@ export function getOrganizationJsonLd() {
     vatID: 'IT14470190969',
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'info@sauilmoro.it',
+      email: 'info@sauilmoro.com',
       contactType: 'customer service',
       availableLanguage: ['Italian', 'English'],
     },

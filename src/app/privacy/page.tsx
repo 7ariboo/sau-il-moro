@@ -27,7 +27,7 @@ export default function PrivacyPage() {
               <strong>Near di Diana Gabriele</strong> (marchio registrato Sau Il Moro)<br />
               Partita IVA: <span className="font-mono text-brand-rust font-bold">14470190969</span><br />
               Sede Legale: Sardegna, Italia<br />
-              Email di contatto: <a href="mailto:info@sauilmoro.it" className="text-brand-rust underline font-bold">info@sauilmoro.it</a>
+              Email di contatto: <a href="mailto:info@sauilmoro.com" className="text-brand-rust underline font-bold">info@sauilmoro.com</a>
             </p>
           </section>
 
@@ -82,7 +82,7 @@ export default function PrivacyPage() {
               <li>Proporre reclamo all&apos;Autorità Garante per la Protezione dei Dati Personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer" className="text-brand-rust underline">www.garanteprivacy.it</a>).</li>
             </ul>
             <p className="pt-2">
-              Per esercitare i tuoi diritti puoi inviare una richiesta scritta via email a: <a href="mailto:info@sauilmoro.it" className="text-brand-rust underline font-bold">info@sauilmoro.it</a>.
+              Per esercitare i tuoi diritti puoi inviare una richiesta scritta via email a: <a href="mailto:info@sauilmoro.com" className="text-brand-rust underline font-bold">info@sauilmoro.com</a>.
             </p>
           </section>
 

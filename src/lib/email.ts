@@ -8,7 +8,7 @@ import {
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const fromEmail = process.env.SENDER_EMAIL || 'ordini@sauilmoro.it';
+const fromEmail = process.env.SENDER_EMAIL || 'ordini@sauilmoro.com';
 
 export async function sendWelcomeEmail(toEmail: string, name?: string) {
   if (!resend) {

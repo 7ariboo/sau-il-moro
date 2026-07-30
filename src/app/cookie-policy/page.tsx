@@ -72,7 +72,7 @@ export default function CookiePolicyPage() {
             <p>
               Per qualsiasi chiarimento in merito alla presente Cookie Policy o all&apos;esercizio dei tuoi diritti: <br />
               <strong>Near di Diana Gabriele</strong> — P.IVA: <span className="font-mono text-brand-rust font-bold">14470190969</span><br />
-              Email: <a href="mailto:info@sauilmoro.it" className="text-brand-rust underline font-bold">info@sauilmoro.it</a>
+              Email: <a href="mailto:info@sauilmoro.com" className="text-brand-rust underline font-bold">info@sauilmoro.com</a>
             </p>
           </section>
 
