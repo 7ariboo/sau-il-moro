@@ -69,9 +69,9 @@ export const Footer: React.FC = () => {
                 <li className="text-[11px] normal-case text-gray-400">Lun - Sab: 09:00 - 18:00</li>
               </ul>
               <div className="flex gap-2">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold">FB</a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold">IG</a>
-                <a href="https://wa.me/390000000000" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold">WA</a>
+                <a href="https://www.facebook.com/sauilmoro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Facebook">FB</a>
+                <a href="https://www.instagram.com/sauilmoro/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Instagram">IG</a>
+                <a href="mailto:info@sauilmoro.it" className="w-9 h-9 bg-brand-rust text-white flex items-center justify-center rounded-sm hover:bg-deep-black transition-colors text-xs font-bold" aria-label="Email">✉</a>
               </div>
             </div>
           </div>
