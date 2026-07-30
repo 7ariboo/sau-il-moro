@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { newsletterSubscribers } from '@/lib/data';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -26,9 +27,12 @@ export async function POST(request: Request) {
       subscribedAt: new Date().toISOString(),
     });
 
+    // Send welcome email immediately
+    await sendWelcomeEmail(email);
+
     return NextResponse.json({
       success: true,
-      message: 'Iscrizione completata! Benvenuto nella famiglia Sau Il Moro.',
+      message: 'Iscrizione completata! Ti abbiamo inviato un\'email di benvenuto.',
     }, { status: 201 });
   } catch {
     return NextResponse.json(

@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { useParams, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { getProductById, getProductsByCategory, getCategoryBySlug } from '@/lib/data';
+import { JsonLd, getProductJsonLd } from '@/components/JsonLd';
 
 export default function ProductPage() {
   const params = useParams();
@@ -29,9 +30,12 @@ export default function ProductPage() {
     return (
       <main className="min-h-screen bg-stone-texture">
         <Header />
-        <div className="container mx-auto px-6 pt-40 pb-24 text-center">
-          <h1 className="text-4xl font-display mb-4">Prodotto non trovato</h1>
-          <Link href="/"><ButtonCustom>Torna alla Home</ButtonCustom></Link>
+        <div className="container mx-auto px-6 pt-36 pb-20 text-center">
+          <h1 className="text-3xl font-display font-bold uppercase mb-4">Prodotto non trovato</h1>
+          <p className="text-gray-600 mb-8">Il prodotto che stai cercando non esiste o è stato rimosso.</p>
+          <Link href="/">
+            <ButtonCustom variant="primary">Torna alla Home</ButtonCustom>
+          </Link>
         </div>
       </main>
     );
@@ -82,6 +86,7 @@ export default function ProductPage() {
   return (
     <main className="min-h-screen bg-stone-texture">
       <Header />
+      <JsonLd data={getProductJsonLd(product)} />
 
       <div className="container mx-auto px-6 pt-32 pb-24">
         {/* Breadcrumbs */}
