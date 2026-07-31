@@ -301,11 +301,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    if (auth) {
-      await signOut(auth);
+    try {
+      if (auth) {
+        await signOut(auth);
+      }
+    } catch (e) {
+      console.error('Error signing out from auth:', e);
     }
     setUser(null);
-    localStorage.removeItem('sau-auth-user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('sau-auth-user');
+      sessionStorage.clear();
+    }
   };
 
   return (
