@@ -157,7 +157,7 @@ export const ItalianCityAutocomplete: React.FC<ItalianCityAutocompleteProps> = (
           placeholder="Cerca il tuo comune (es. Cagliari, Roma, Pattada...)"
           className="w-full bg-white border border-gray-200 p-4 text-sm focus:outline-none focus:border-brand-rust transition-colors"
           required={required}
-          autoComplete="off"
+          autoComplete="shipping address-level2"
         />
         {isOpen && suggestions.length > 0 && (
           <ul className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 shadow-xl max-h-60 overflow-y-auto divide-y divide-gray-100">

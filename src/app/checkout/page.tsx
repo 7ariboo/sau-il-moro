@@ -210,6 +210,7 @@ export default function CheckoutPage() {
                 <Input
                   label="Nome *"
                   name="name"
+                  autoComplete="given-name"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
@@ -217,6 +218,7 @@ export default function CheckoutPage() {
                 <Input
                   label="Cognome *"
                   name="surname"
+                  autoComplete="family-name"
                   value={formData.surname}
                   onChange={handleInputChange}
                   required
@@ -228,6 +230,7 @@ export default function CheckoutPage() {
                   label="Email *"
                   name="email"
                   type="email"
+                  autoComplete="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
@@ -236,6 +239,7 @@ export default function CheckoutPage() {
                   label="Telefono per il Corriere (+39 ...) *"
                   name="phone"
                   type="tel"
+                  autoComplete="tel"
                   placeholder="+39 333 1234567"
                   pattern="^[+0-9\s-]{6,20}$"
                   title="Numero di telefono richiesto per il tracciamento SMS del corriere"
@@ -248,6 +252,7 @@ export default function CheckoutPage() {
               <Input
                 label="Indirizzo di Spedizione (Via/Piazza e Civico) *"
                 name="address"
+                autoComplete="shipping street-address"
                 placeholder="Es. Via Roma 45, Interno 2"
                 value={formData.address}
                 onChange={handleInputChange}
@@ -263,6 +268,7 @@ export default function CheckoutPage() {
                 <Input
                   label="CAP *"
                   name="zip"
+                  autoComplete="shipping postal-code"
                   value={formData.zip}
                   onChange={handleInputChange}
                   required
@@ -338,6 +344,7 @@ export default function CheckoutPage() {
                       <Input
                         label="Ragione Sociale Azienda *"
                         name="ragioneSociale"
+                        autoComplete="organization"
                         value={invoiceData.ragioneSociale}
                         onChange={handleInvoiceChange}
                         required={requestInvoice && invoiceType === 'business'}

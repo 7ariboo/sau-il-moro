@@ -162,14 +162,14 @@ function AuthForms({
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'register' && (
               <div className="grid grid-cols-2 gap-4">
-                <FormInput label="Nome" name="name" value={form.name} onChange={handleChange} required />
-                <FormInput label="Cognome" name="surname" value={form.surname} onChange={handleChange} required />
+                <FormInput label="Nome" name="name" autoComplete="given-name" value={form.name} onChange={handleChange} required />
+                <FormInput label="Cognome" name="surname" autoComplete="family-name" value={form.surname} onChange={handleChange} required />
               </div>
             )}
-            <FormInput label="Email" name="email" type="email" value={form.email} onChange={handleChange} required />
-            <FormInput label="Password" name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} />
+            <FormInput label="Email" name="email" type="email" autoComplete="email" value={form.email} onChange={handleChange} required />
+            <FormInput label="Password" name="password" type="password" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} value={form.password} onChange={handleChange} required minLength={6} />
             {mode === 'register' && (
-              <FormInput label="Telefono (opzionale)" name="phone" type="tel" value={form.phone} onChange={handleChange} />
+              <FormInput label="Telefono (opzionale)" name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={handleChange} />
             )}
 
             {mode === 'register' && (
@@ -357,6 +357,7 @@ function AccountDashboard({
                     <FormInput
                       label="Nome"
                       name="name"
+                      autoComplete="given-name"
                       value={profileForm.name}
                       onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                       required
@@ -364,6 +365,7 @@ function AccountDashboard({
                     <FormInput
                       label="Cognome"
                       name="surname"
+                      autoComplete="family-name"
                       value={profileForm.surname}
                       onChange={(e) => setProfileForm({ ...profileForm, surname: e.target.value })}
                       required
@@ -373,6 +375,7 @@ function AccountDashboard({
                     label="Email (non modificabile)"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     value={user.email}
                     disabled
                     className="bg-gray-100 cursor-not-allowed opacity-75"
@@ -381,6 +384,7 @@ function AccountDashboard({
                     label="Numero di Telefono (+39 ...)"
                     name="phone"
                     type="tel"
+                    autoComplete="tel"
                     placeholder="+39 333 1234567"
                     pattern="^[+0-9\s-]{6,20}$"
                     title="Inserisci un numero di telefono valido (es. +39 333 1234567)"
@@ -438,6 +442,7 @@ function AccountDashboard({
                   <FormInput
                     label="Indirizzo (Via, Piazza, Numero Civico)"
                     name="address"
+                    autoComplete="street-address"
                     value={addressForm.address}
                     onChange={(e) => setAddressForm({ ...addressForm, address: e.target.value })}
                     required
@@ -451,6 +456,7 @@ function AccountDashboard({
                     <FormInput
                       label="Codice Postale (CAP)"
                       name="zip"
+                      autoComplete="postal-code"
                       value={addressForm.zip}
                       onChange={(e) => setAddressForm({ ...addressForm, zip: e.target.value })}
                       required
