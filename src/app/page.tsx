@@ -40,7 +40,7 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden" style={{ minHeight: 'calc(100vh - 100px)', marginTop: '100px' }}>
+      <section className="relative w-full overflow-hidden mt-[152px] md:mt-[100px]" style={{ minHeight: 'calc(100vh - 152px)' }}>
         {/* Immagine di sfondo */}
         <div className="absolute inset-0 z-0">
           {/* Desktop */}
@@ -57,7 +57,7 @@ export default function Home() {
             src="/images/home-mobile.png"
             alt="Sau Il Moro"
             fill
-            className="block md:hidden object-cover object-top"
+            className="block md:hidden object-cover object-[center_15%]"
             priority
             sizes="100vw"
           />
