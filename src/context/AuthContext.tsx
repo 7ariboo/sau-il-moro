@@ -85,7 +85,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setUser(newProfile);
               localStorage.setItem('sau-auth-user', JSON.stringify(newProfile));
               if (fbUser.email) {
-                sendWelcomeEmail(fbUser.email, name);
+                fetch('/api/email/welcome', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: fbUser.email, name }),
+                }).catch(e => console.error('Error triggering welcome email:', e));
               }
             }
           } catch (error) {
@@ -164,7 +168,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         setUser(profile);
         localStorage.setItem('sau-auth-user', JSON.stringify(profile));
-        sendWelcomeEmail(data.email, data.name);
+        fetch('/api/email/welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: data.email, name: data.name }),
+        }).catch(e => console.error('Error triggering welcome email:', e));
         return { success: true };
       } else {
         const mockUser: AuthUser = {
@@ -177,7 +185,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         setUser(mockUser);
         localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
-        sendWelcomeEmail(data.email, data.name);
+        fetch('/api/email/welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: data.email, name: data.name }),
+        }).catch(e => console.error('Error triggering welcome email:', e));
         return { success: true };
       }
     } catch (err: any) {
