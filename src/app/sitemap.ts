@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { PRODUCTS, CATEGORIES } from '@/lib/data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://sauilmoro.it';
+  const baseUrl = 'https://sauilmoro.com';
 
   const productUrls = PRODUCTS.map((product) => ({
     url: `${baseUrl}/products/${product.slug || product.id}`,

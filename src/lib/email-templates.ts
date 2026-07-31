@@ -32,7 +32,7 @@ export function getWelcomeEmailHtml(userName: string = 'Appassionato dell\'Artig
             <p>Ogni nostra creazione racchiude la storia, l'anima e il sapere antico dei maestri coltellinai sardi. Dai modelli iconici come l'<strong>Arburesa</strong> e la <strong>Pattadese</strong>, fino ai pezzi esclusivi in edizione limitata.</p>
             <p>Come iscritto, sarai il primo a scoprire i nuovi pezzi unici forgati nel nostro laboratorio e le edizioni speciali riservate.</p>
             <div style="text-align: center;">
-              <a href="https://sauilmoro.it" class="button">Esplora lo Store</a>
+              <a href="https://sauilmoro.com" class="button">Esplora lo Store</a>
             </div>
           </div>
           <div class="footer">
@@ -204,7 +204,7 @@ export function getOrderShippedEmailHtml(
             <div class="tracking-box">
               <div style="font-size: 12px; font-weight: bold; text-transform: uppercase; color: #2e7d32;">Corriere: ${carrier}</div>
               <div style="font-size: 16px; font-weight: bold; font-family: monospace; margin: 8px 0; color: #0A0A0A;">Tracking ID: ${trackingNumber}</div>
-              <a href="https://sauilmoro.it/account" class="button">Traccia Spedizione</a>
+              <a href="https://sauilmoro.com/account" class="button">Traccia Spedizione</a>
             </div>
 
             <p>Ti ringraziamo ancora per aver scelto l'artigianato unico di Sau Il Moro!</p>

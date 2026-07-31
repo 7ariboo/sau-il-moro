@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Il carrello è vuoto' }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sauilmoro.it';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sauilmoro.com';
 
     // Map items to Stripe line_items format
     const lineItems = items.map((item: { productId: string; quantity: number }) => {

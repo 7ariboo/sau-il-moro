@@ -19,8 +19,8 @@ export function getOrganizationJsonLd() {
     '@type': 'Organization',
     name: 'Sau Il Moro',
     legalName: 'Near di Diana Gabriele',
-    url: 'https://sauilmoro.it',
-    logo: 'https://sauilmoro.it/images/firma.png',
+    url: 'https://sauilmoro.com',
+    logo: 'https://sauilmoro.com/images/firma.png',
     vatID: 'IT14470190969',
     contactPoint: {
       '@type': 'ContactPoint',
@@ -40,10 +40,10 @@ export function getWebSiteJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Sau Il Moro',
-    url: 'https://sauilmoro.it',
+    url: 'https://sauilmoro.com',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://sauilmoro.it/category/ferro?q={search_term_string}',
+      target: 'https://sauilmoro.com/category/ferro?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };
@@ -58,7 +58,7 @@ export function getProductJsonLd(product: {
   id: string;
   inStock?: boolean;
 }) {
-  const baseUrl = 'https://sauilmoro.it';
+  const baseUrl = 'https://sauilmoro.com';
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',

@@ -21,7 +21,7 @@ const natronSans = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sauilmoro.it"),
+  metadataBase: new URL("https://sauilmoro.com"),
   title: {
     default: "Sau Il Moro — Coltelli Artigianali Sardi & Lusso Rustico",
     template: "%s | Sau Il Moro",
@@ -37,13 +37,16 @@ export const metadata: Metadata = {
     "coltelli sardi fatti a mano",
     "coltello da scuoio sardo",
   ],
-  authors: [{ name: "Near di Diana Gabriele", url: "https://sauilmoro.it" }],
+  authors: [{ name: "Near di Diana Gabriele", url: "https://sauilmoro.com" }],
   creator: "Sau Il Moro",
   publisher: "Near di Diana Gabriele",
   formatDetection: {
     telephone: true,
     address: true,
     email: true,
+  },
+  verification: {
+    google: "fedey5p3vXzX96siepAG_jZKEr5Y9fnEfrwKDGMza1k",
   },
   icons: [
     { rel: "icon", url: "/images/firma.png" },
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Sau Il Moro — Coltelli Artigianali Sardi & Lusso Rustico",
     description: "Creazioni iconiche dell'artigianato sardo: Arburesa, Pattadese, Gallurese. Fatti a mano in Sardegna. Spedizione espresso in tutta Italia.",
-    url: "https://sauilmoro.it",
+    url: "https://sauilmoro.com",
     siteName: "Sau Il Moro",
     locale: "it_IT",
     type: "website",
