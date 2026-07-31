@@ -102,7 +102,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem('sau-auth-user');
       if (saved) {
         try {
-          setUser(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          if (parsed && isAdminEmail(parsed.email)) {
+            parsed.role = 'admin';
+          }
+          setUser(parsed);
         } catch {
           localStorage.removeItem('sau-auth-user');
         }

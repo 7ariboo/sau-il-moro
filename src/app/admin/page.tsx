@@ -8,6 +8,7 @@ import { AddProductModal } from '@/components/AddProductModal';
 import { EditProductModal } from '@/components/EditProductModal';
 import { AddDiscountModal } from '@/components/AddDiscountModal';
 import { Product, Order, DiscountCode, IntegrationSettings } from '@/lib/types';
+import { isAdminEmail } from '@/lib/auth';
 
 type AdminTab = 'overview' | 'products' | 'orders' | 'customers' | 'newsletter' | 'discounts' | 'settings';
 
@@ -26,7 +27,9 @@ export default function AdminPage() {
     );
   }
 
-  if (!user || user.role !== 'admin') {
+  const isAuthorizedAdmin = user && (user.role === 'admin' || isAdminEmail(user.email));
+
+  if (!isAuthorizedAdmin) {
     return (
       <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center">
         <div className="text-center space-y-6">
