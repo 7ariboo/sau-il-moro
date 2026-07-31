@@ -51,13 +51,10 @@ export const Header: React.FC = () => {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 text-[#5a4a3a] hover:text-[#b34624] transition-colors group">
-              <div className="relative w-12 h-10 md:w-16 md:h-12 shrink-0">
-                <Image src="/images/firma.png" alt="Sau Il Moro" fill className="object-contain transition-transform group-hover:scale-105" sizes="64px" priority />
+            <Link href="/" className="flex items-center group py-1" aria-label="Sau Il Moro Home">
+              <div className="relative w-40 h-14 md:w-56 md:h-18 shrink-0">
+                <Image src="/images/firma.png" alt="Sau Il Moro" fill className="object-contain object-left transition-transform group-hover:scale-105" sizes="(max-width: 768px) 160px, 224px" priority />
               </div>
-              <span className="font-display font-bold tracking-widest uppercase text-sm md:text-lg">
-                SAU IL MORO
-              </span>
             </Link>
           </div>
 
