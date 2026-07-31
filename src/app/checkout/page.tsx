@@ -5,7 +5,6 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
-import { ItalianCityAutocomplete } from '@/components/ItalianCityAutocomplete';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -260,15 +259,20 @@ export default function CheckoutPage() {
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ItalianCityAutocomplete
-                  cityValue={formData.city}
-                  zipValue={formData.zip}
-                  onSelect={(c, z) => setFormData(prev => ({ ...prev, city: c, zip: z }))}
+                <Input
+                  label="Città / Comune *"
+                  name="city"
+                  autoComplete="shipping address-level2"
+                  placeholder="Es. Cagliari, Roma, Pattada..."
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  required
                 />
                 <Input
                   label="CAP *"
                   name="zip"
                   autoComplete="shipping postal-code"
+                  placeholder="Es. 09121"
                   value={formData.zip}
                   onChange={handleInputChange}
                   required

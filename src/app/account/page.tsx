@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
-import { ItalianCityAutocomplete } from '@/components/ItalianCityAutocomplete';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
@@ -448,15 +447,20 @@ function AccountDashboard({
                     required
                   />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ItalianCityAutocomplete
-                      cityValue={addressForm.city}
-                      zipValue={addressForm.zip}
-                      onSelect={(c, z) => setAddressForm(prev => ({ ...prev, city: c, zip: z }))}
+                    <FormInput
+                      label="Città / Comune"
+                      name="city"
+                      autoComplete="address-level2"
+                      placeholder="Es. Cagliari, Roma, Pattada..."
+                      value={addressForm.city}
+                      onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                      required
                     />
                     <FormInput
                       label="Codice Postale (CAP)"
                       name="zip"
                       autoComplete="postal-code"
+                      placeholder="Es. 09121"
                       value={addressForm.zip}
                       onChange={(e) => setAddressForm({ ...addressForm, zip: e.target.value })}
                       required
