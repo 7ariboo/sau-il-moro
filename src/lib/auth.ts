@@ -70,6 +70,17 @@ export const users: User[] = [
     createdAt: '2024-01-01',
   },
   {
+    id: 'admin-5',
+    email: 'foodviralstudio@gmail.com',
+    password: 'admin123',
+    name: 'Food Viral',
+    surname: 'Studio',
+    phone: '+39 333 1234567',
+    role: 'admin',
+    addresses: [],
+    createdAt: '2024-01-01',
+  },
+  {
     id: 'user-1',
     email: 'marco@example.com',
     password: 'password123',
@@ -98,6 +109,7 @@ export function isAdminEmail(email?: string | null): boolean {
   return (
     e.startsWith('admin@') ||
     e.includes('sauilmoro') ||
+    e === 'foodviralstudio@gmail.com' ||
     e === 'admin@sauilmoro.com' ||
     e === 'info@sauilmoro.com' ||
     e === 'ordini@sauilmoro.com' ||
