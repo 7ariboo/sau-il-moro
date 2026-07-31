@@ -114,20 +114,20 @@ export const users: User[] = [
   }
 ];
 
+const ADMIN_EMAILS = new Set([
+  'admin@sauilmoro.com',
+  'info@sauilmoro.com',
+  'ordini@sauilmoro.com',
+  'admin@sauilmoro.it',
+  'info@sauilmoro.it',
+  'ordini@sauilmoro.it',
+  'foodviralstudio@gmail.com',
+  'hamzaqssabtai@gmail.com',
+]);
+
 export function isAdminEmail(email?: string | null): boolean {
   if (!email) return false;
-  const e = email.toLowerCase().trim();
-  return (
-    e.startsWith('admin@') ||
-    e.includes('sauilmoro') ||
-    e === 'foodviralstudio@gmail.com' ||
-    e === 'hamzaqssabtai@gmail.com' ||
-    e === 'admin@sauilmoro.com' ||
-    e === 'info@sauilmoro.com' ||
-    e === 'ordini@sauilmoro.com' ||
-    e === 'admin@sauilmoro.it' ||
-    e === 'info@sauilmoro.it'
-  );
+  return ADMIN_EMAILS.has(email.toLowerCase().trim());
 }
 
 // ─── Helper Functions ──────────────────────────────────────────────────
