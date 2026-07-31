@@ -46,9 +46,13 @@ export async function sendOrderConfirmationEmail(
     return { success: true, simulated: true };
   }
   try {
+    const recipients = toEmail.toLowerCase() === 'ordini@sauilmoro.com' 
+      ? [toEmail] 
+      : [toEmail, 'ordini@sauilmoro.com'];
+
     const data = await resend.emails.send({
       from: `Sau Il Moro <${fromEmail}>`,
-      to: toEmail,
+      to: recipients,
       subject: `Conferma d'Acquisto Ordine #${order.id} — Sau Il Moro`,
       html: getOrderConfirmationEmailHtml(order),
     });

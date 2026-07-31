@@ -27,6 +27,39 @@ export interface Address {
 export const users: User[] = [
   {
     id: 'admin-1',
+    email: 'admin@sauilmoro.com',
+    password: 'admin123',
+    name: 'Sau',
+    surname: 'Il Moro',
+    phone: '+39 333 1234567',
+    role: 'admin',
+    addresses: [],
+    createdAt: '2024-01-01',
+  },
+  {
+    id: 'admin-2',
+    email: 'info@sauilmoro.com',
+    password: 'admin123',
+    name: 'Info',
+    surname: 'Sau Il Moro',
+    phone: '+39 333 1234567',
+    role: 'admin',
+    addresses: [],
+    createdAt: '2024-01-01',
+  },
+  {
+    id: 'admin-3',
+    email: 'ordini@sauilmoro.com',
+    password: 'admin123',
+    name: 'Ordini',
+    surname: 'Sau Il Moro',
+    phone: '+39 333 1234567',
+    role: 'admin',
+    addresses: [],
+    createdAt: '2024-01-01',
+  },
+  {
+    id: 'admin-4',
     email: 'admin@sauilmoro.it',
     password: 'admin123',
     name: 'Sau',
@@ -58,6 +91,20 @@ export const users: User[] = [
     createdAt: '2024-06-15',
   }
 ];
+
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const e = email.toLowerCase().trim();
+  return (
+    e.startsWith('admin@') ||
+    e.includes('sauilmoro') ||
+    e === 'admin@sauilmoro.com' ||
+    e === 'info@sauilmoro.com' ||
+    e === 'ordini@sauilmoro.com' ||
+    e === 'admin@sauilmoro.it' ||
+    e === 'info@sauilmoro.it'
+  );
+}
 
 // ─── Helper Functions ──────────────────────────────────────────────────
 

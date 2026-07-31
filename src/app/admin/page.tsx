@@ -151,6 +151,35 @@ function Dashboard({
     }
   };
 
+  const handleExportOrdersCSV = () => {
+    if (orders.length === 0) return;
+    const headers = ['ID Ordine', 'Data', 'Nome', 'Cognome', 'Email', 'Telefono', 'Indirizzo', 'Citta', 'CAP', 'Prodotti', 'Totale EUR', 'Stato Pagamento', 'Stato Evasione'];
+    const rows = orders.map(o => [
+      o.id,
+      new Date(o.createdAt).toLocaleDateString(),
+      `"${o.customer.name || ''}"`,
+      `"${o.customer.surname || ''}"`,
+      `"${o.customer.email || ''}"`,
+      `"${o.customer.phone || ''}"`,
+      `"${o.customer.address || ''}"`,
+      `"${o.customer.city || ''}"`,
+      `"${o.customer.zip || ''}"`,
+      `"${o.items.map(i => `${i.name} x${i.quantity}`).join(' | ')}"`,
+      o.total,
+      o.paymentStatus,
+      o.status
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `ordini_sauilmoro_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 
     p.category.toLowerCase().includes(search.toLowerCase())
@@ -351,11 +380,16 @@ function Dashboard({
 
         {/* Orders Tab */}
         {tab === 'orders' && (
-          <div className="space-y-6 animate-fade-in">
-            <div>
-              <h1 className="text-3xl font-display text-white uppercase">Ordini</h1>
-              <p className="text-white/30 text-xs uppercase tracking-widest mt-1">{orders.length} ordini totali</p>
-            </div>
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-display text-white uppercase">Ordini</h1>
+                  <p className="text-white/30 text-xs uppercase tracking-widest mt-1">{orders.length} ordini totali</p>
+                </div>
+                <ButtonCustom size="sm" onClick={handleExportOrdersCSV}>
+                  📥 Esporta Ordini (Excel/CSV)
+                </ButtonCustom>
+              </div>
 
             <div className="bg-[#161616] border border-white/5 rounded-xl overflow-hidden">
               <table className="w-full">

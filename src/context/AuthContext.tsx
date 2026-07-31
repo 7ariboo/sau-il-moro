@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged,
   signInWithPopup,
@@ -11,6 +12,7 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db, googleProvider, appleProvider } from '@/lib/firebase';
 import { sendWelcomeEmail } from '@/lib/email';
+import { isAdminEmail } from '@/lib/auth';
 
 export interface AuthUser {
   id: string;
@@ -32,6 +34,7 @@ interface AuthContextType {
   register: (data: { email: string; password: string; name: string; surname: string; phone?: string; newsletter?: boolean }) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   loginWithApple: () => Promise<{ success: boolean; error?: string }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updateUserProfile: (updates: Partial<AuthUser>) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   isAdmin: boolean;
@@ -63,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 city: data.city || '',
                 zip: data.zip || '',
                 newsletter: !!data.newsletter,
-                role: data.role || (fbUser.email === 'admin@sauilmoro.it' ? 'admin' : 'customer'),
+                role: data.role || (isAdminEmail(fbUser.email) ? 'admin' : 'customer'),
               };
               setUser(profile);
               localStorage.setItem('sau-auth-user', JSON.stringify(profile));
@@ -76,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name,
                 surname,
                 phone: '',
-                role: fbUser.email === 'admin@sauilmoro.it' ? 'admin' : 'customer',
+                role: isAdminEmail(fbUser.email) ? 'admin' : 'customer',
               };
               await setDoc(userDocRef, { ...newProfile, createdAt: new Date().toISOString() });
               setUser(newProfile);
@@ -115,12 +118,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       } else {
         const mockUser: AuthUser = {
-          id: email === 'admin@sauilmoro.it' ? 'admin-1' : `user-${Date.now()}`,
+          id: isAdminEmail(email) ? 'admin-1' : `user-${Date.now()}`,
           email,
           name: email.split('@')[0],
           surname: 'Sardo',
           phone: '+39 333 1234567',
-          role: email === 'admin@sauilmoro.it' ? 'admin' : 'customer',
+          role: isAdminEmail(email) ? 'admin' : 'customer',
         };
         setUser(mockUser);
         localStorage.setItem('sau-auth-user', JSON.stringify(mockUser));
@@ -242,6 +245,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      if (auth) {
+        await sendPasswordResetEmail(auth, email);
+        return { success: true };
+      } else {
+        console.log(`[SIMULATED PASSWORD RESET] Email sent to ${email}`);
+        return { success: true };
+      }
+    } catch (err: any) {
+      console.error('Reset Password Error:', err);
+      let message = 'Impossibile inviare la mail di ripristino password.';
+      if (err.code === 'auth/user-not-found') {
+        message = 'Nessun account trovato con questo indirizzo email.';
+      } else if (err.code === 'auth/invalid-email') {
+        message = 'Indirizzo email non valido.';
+      }
+      return { success: false, error: message };
+    }
+  };
+
   const updateUserProfile = async (updates: Partial<AuthUser>) => {
     try {
       const updatedUser = user ? { ...user, ...updates } : null;
@@ -277,6 +301,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         loginWithGoogle,
         loginWithApple,
+        resetPassword,
         updateUserProfile,
         logout,
         isAdmin: user?.role === 'admin',
