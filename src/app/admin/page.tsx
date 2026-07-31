@@ -228,6 +228,49 @@ function Dashboard({
     document.body.removeChild(link);
   };
 
+  const [isSendingEmails, setIsSendingEmails] = useState(false);
+
+  const handleSendWelcomeToAll = async () => {
+    if (usersList.length === 0) return;
+    if (!confirm(`Vuoi inviare l'email di benvenuto a tutti i ${usersList.length} clienti registrati?`)) return;
+    setIsSendingEmails(true);
+    try {
+      const res = await fetch('/api/email/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ batch: true, users: usersList }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`✓ Email di benvenuto inviate con successo a ${data.count} utenti!`);
+      } else {
+        alert('Errore durante l\'invio delle email.');
+      }
+    } catch {
+      alert('Errore durante l\'invio delle email.');
+    } finally {
+      setIsSendingEmails(false);
+    }
+  };
+
+  const handleSendWelcomeToSingle = async (email: string, name: string) => {
+    try {
+      const res = await fetch('/api/email/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`✓ Email di benvenuto inviata a ${email}!`);
+      } else {
+        alert('Errore durante l\'invio dell\'email.');
+      }
+    } catch {
+      alert('Errore durante l\'invio dell\'email.');
+    }
+  };
+
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 
     p.category.toLowerCase().includes(search.toLowerCase())
@@ -499,14 +542,24 @@ function Dashboard({
         {/* Customers Tab */}
         {tab === 'customers' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-display text-white uppercase">Clienti Registrati</h1>
                 <p className="text-white/30 text-xs uppercase tracking-widest mt-1">{usersList.length} clienti registrati</p>
               </div>
-              <ButtonCustom size="sm" onClick={handleExportCustomersCSV}>
-                📥 Esporta Clienti (CSV)
-              </ButtonCustom>
+              <div className="flex flex-wrap items-center gap-3">
+                <ButtonCustom size="sm" onClick={handleExportCustomersCSV}>
+                  📥 Esporta Clienti (CSV)
+                </ButtonCustom>
+                <ButtonCustom
+                  size="sm"
+                  onClick={handleSendWelcomeToAll}
+                  disabled={isSendingEmails}
+                  className="!bg-brand-rust !text-white hover:!bg-brand-rust/90"
+                >
+                  {isSendingEmails ? 'Invio in corso...' : '✉️ Invia Mail Benvenuto a Tutti'}
+                </ButtonCustom>
+              </div>
             </div>
 
             <div className="bg-[#161616] border border-white/5 rounded-xl overflow-hidden">
@@ -518,6 +571,7 @@ function Dashboard({
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Telefono</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Ruolo</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Data Iscrizione</th>
+                    <th className="text-right text-[10px] text-white/30 font-bold uppercase tracking-widest px-6 py-4">Azioni</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -537,6 +591,14 @@ function Dashboard({
                       </td>
                       <td className="px-4 py-4 text-white/30 text-xs">
                         {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleSendWelcomeToSingle(u.email, u.name || 'Cliente')}
+                          className="text-xs font-bold uppercase tracking-wider text-brand-rust hover:text-white transition-colors bg-brand-rust/10 hover:bg-brand-rust px-3 py-1.5 rounded-sm"
+                        >
+                          ✉️ Invia Benvenuto
+                        </button>
                       </td>
                     </tr>
                   ))}
