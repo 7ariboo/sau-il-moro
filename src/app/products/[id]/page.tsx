@@ -88,7 +88,7 @@ export default function ProductPage() {
       <Header />
       <JsonLd data={getProductJsonLd(product)} />
 
-      <div className="container mx-auto px-6 pt-32 pb-24">
+      <div className="container mx-auto px-6 pt-[170px] md:pt-36 pb-24">
         {/* Breadcrumbs */}
         <nav className="mb-12">
           <ul className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 flex-wrap">

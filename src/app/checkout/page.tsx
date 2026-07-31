@@ -175,7 +175,7 @@ export default function CheckoutPage() {
     <main className="min-h-screen bg-stone-texture">
       <Header />
 
-      <div className="container mx-auto px-6 pt-32 pb-24">
+      <div className="container mx-auto px-6 pt-[170px] md:pt-36 pb-24">
         <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-3xl md:text-4xl font-display uppercase tracking-wider">

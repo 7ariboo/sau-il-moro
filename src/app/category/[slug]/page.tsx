@@ -27,13 +27,13 @@ export default function CategoryPage() {
       <Header />
 
       {/* Full-width Edge-to-Edge Banner Image (no top or side gaps) */}
-      <section className="pt-[100px] w-full">
-        <div className="relative w-full h-[70vh] md:h-[85vh] min-h-[450px]">
+      <section className="pt-[152px] md:pt-[100px] w-full">
+        <div className="relative w-full h-[65vh] md:h-[85vh] min-h-[400px]">
           <Image
             src={categoryInfo.image}
             alt={categoryInfo.name}
             fill
-            className="object-cover object-center"
+            className="object-cover object-[center_20%] md:object-center"
             priority
             sizes="100vw"
           />

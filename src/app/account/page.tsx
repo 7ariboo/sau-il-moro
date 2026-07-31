@@ -111,7 +111,7 @@ function AuthForms({
   return (
     <main className="min-h-screen bg-stone-texture">
       <Header />
-      <div className="container mx-auto px-6 pt-32 pb-24 flex justify-center">
+      <div className="container mx-auto px-6 pt-[170px] md:pt-36 pb-24 flex justify-center">
         <div className="w-full max-w-md bg-white p-8 border border-gray-100 shadow-sm">
           {/* Tabs */}
           <div className="flex border-b border-gray-200 mb-8">
