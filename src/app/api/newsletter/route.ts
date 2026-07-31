@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { newsletterSubscribers } from '@/lib/data';
 import { sendWelcomeEmail } from '@/lib/email';
 
+export async function GET() {
+  return NextResponse.json({ success: true, data: newsletterSubscribers });
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

@@ -87,6 +87,8 @@ function Dashboard({
   onRefresh: () => void 
 }) {
   const [tab, setTab] = useState<AdminTab>('overview');
+  const [usersList, setUsersList] = useState<any[]>([]);
+  const [newsletterList, setNewsletterList] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [discounts, setDiscounts] = useState<DiscountCode[]>([]);
@@ -100,6 +102,8 @@ function Dashboard({
     fetch('/api/orders').then(r => r.json()).then(d => d.success && setOrders(d.data));
     fetch('/api/discounts').then(r => r.json()).then(d => d.success && setDiscounts(d.data));
     fetch('/api/settings').then(r => r.json()).then(d => d.success && setSettings(d.data));
+    fetch('/api/users').then(r => r.json()).then(d => d.success && setUsersList(d.data));
+    fetch('/api/newsletter').then(r => r.json()).then(d => d.success && setNewsletterList(d.data));
   }, [refreshKey]);
 
   const handleDeleteProduct = async (id: string) => {
@@ -178,6 +182,47 @@ function Dashboard({
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
     link.setAttribute('download', `ordini_sauilmoro_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportCustomersCSV = () => {
+    if (usersList.length === 0) return;
+    const headers = ['ID', 'Email', 'Nome', 'Cognome', 'Telefono', 'Ruolo', 'Data Iscrizione'];
+    const rows = usersList.map(u => [
+      u.id,
+      `"${u.email || ''}"`,
+      `"${u.name || ''}"`,
+      `"${u.surname || ''}"`,
+      `"${u.phone || ''}"`,
+      u.role || 'customer',
+      u.createdAt || ''
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `clienti_sauilmoro_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportNewsletterCSV = () => {
+    if (newsletterList.length === 0) return;
+    const headers = ['Email', 'Data Iscrizione'];
+    const rows = newsletterList.map(n => [
+      `"${n.email}"`,
+      n.subscribedAt || ''
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `newsletter_sauilmoro_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -450,6 +495,107 @@ function Dashboard({
             </div>
           </div>
         )}
+
+        {/* Customers Tab */}
+        {tab === 'customers' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-display text-white uppercase">Clienti Registrati</h1>
+                <p className="text-white/30 text-xs uppercase tracking-widest mt-1">{usersList.length} clienti registrati</p>
+              </div>
+              <ButtonCustom size="sm" onClick={handleExportCustomersCSV}>
+                📥 Esporta Clienti (CSV)
+              </ButtonCustom>
+            </div>
+
+            <div className="bg-[#161616] border border-white/5 rounded-xl overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/5">
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-6 py-4">Cliente</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Email</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Telefono</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Ruolo</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Data Iscrizione</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {usersList.map((u, i) => (
+                    <tr key={u.id || i} className="hover:bg-white/5 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="text-white font-bold text-xs">{u.name} {u.surname}</p>
+                      </td>
+                      <td className="px-4 py-4 text-white/70 text-xs font-mono">{u.email}</td>
+                      <td className="px-4 py-4 text-white/40 text-xs">{u.phone || '—'}</td>
+                      <td className="px-4 py-4">
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider ${
+                          u.role === 'admin' ? 'bg-brand-rust/20 text-brand-rust' : 'bg-white/10 text-white/60'
+                        }`}>
+                          {u.role || 'cliente'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-white/30 text-xs">
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                  {usersList.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-white/20 text-xs uppercase tracking-widest">Nessun cliente registrato</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Newsletter Tab */}
+        {tab === 'newsletter' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-display text-white uppercase">Iscritti Newsletter</h1>
+                <p className="text-white/30 text-xs uppercase tracking-widest mt-1">{newsletterList.length} iscritti attivi</p>
+              </div>
+              <ButtonCustom size="sm" onClick={handleExportNewsletterCSV}>
+                📥 Esporta Newsletter (CSV)
+              </ButtonCustom>
+            </div>
+
+            <div className="bg-[#161616] border border-white/5 rounded-xl overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/5">
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-6 py-4">Email Iscritto</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Data Iscrizione</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Stato</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {newsletterList.map((n, i) => (
+                    <tr key={n.email || i} className="hover:bg-white/5 transition-colors">
+                      <td className="px-6 py-4 text-white font-bold text-xs font-mono">{n.email}</td>
+                      <td className="px-4 py-4 text-white/40 text-xs">
+                        {n.subscribedAt ? new Date(n.subscribedAt).toLocaleDateString() : '—'}
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded">Attivo</span>
+                      </td>
+                    </tr>
+                  ))}
+                  {newsletterList.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="py-12 text-center text-white/20 text-xs uppercase tracking-widest">Nessun iscritto alla newsletter</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Discounts Tab */}
         {tab === 'discounts' && (
           <div className="space-y-6 animate-fade-in">
