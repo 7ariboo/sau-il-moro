@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { ButtonCustom } from '@/components/ButtonCustom';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
+import { isAdminEmail } from '@/lib/auth';
 
 type Tab = 'profile' | 'orders' | 'addresses' | 'settings';
 
@@ -290,6 +291,19 @@ function AccountDashboard({
   const { items, subtotal } = useCart();
   const { updateUserProfile } = useAuth();
 
+  // User Orders State
+  const [userOrders, setUserOrders] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/orders')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && Array.isArray(d.data)) {
+          setUserOrders(d.data.filter((o: any) => o.customer?.email?.toLowerCase() === user.email.toLowerCase()));
+        }
+      });
+  }, [user.email]);
+
   // Profile Form state
   const [profileForm, setProfileForm] = useState({
     name: user.name || '',
@@ -362,6 +376,8 @@ function AccountDashboard({
     },
   ];
 
+  const isUserAdmin = user.role === 'admin' || isAdminEmail(user.email);
+
   return (
     <main className="min-h-screen bg-stone-texture">
       <Header />
@@ -375,9 +391,11 @@ function AccountDashboard({
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mt-1">{user.email}</p>
           </div>
           <div className="flex gap-3">
-            {user.role === 'admin' && (
+            {isUserAdmin && (
               <Link href="/admin">
-                <ButtonCustom variant="outline" size="sm">Dashboard Admin</ButtonCustom>
+                <ButtonCustom className="!bg-brand-rust !text-white hover:!bg-brand-rust/90 shadow-md">
+                  👑 Dashboard Admin
+                </ButtonCustom>
               </Link>
             )}
             <ButtonCustom variant="outline" size="sm" onClick={logout}>Esci</ButtonCustom>
@@ -481,13 +499,39 @@ function AccountDashboard({
             )}
 
             {tab === 'orders' && (
-              <div className="bg-white border border-gray-100 p-8 animate-fade-in">
+              <div className="bg-white border border-gray-100 p-8 animate-fade-in space-y-6">
                 <h2 className="text-xl font-display uppercase tracking-widest mb-6">I tuoi ordini</h2>
-                <div className="text-center py-16 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 opacity-30"><path d="M16 16h6"/><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16"/></svg>
-                  <p className="text-xs font-bold uppercase tracking-widest">I tuoi ordini appariranno qui dopo ogni acquisto.</p>
-                  <Link href="/"><ButtonCustom className="mt-6" size="sm">Inizia a fare shopping</ButtonCustom></Link>
-                </div>
+                {userOrders.length > 0 ? (
+                  <div className="space-y-4">
+                    {userOrders.map((order) => (
+                      <div key={order.id} className="border border-gray-200 p-5 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-stone-50">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-brand-rust text-sm">#{order.id}</span>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase">{new Date(order.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <p className="text-xs text-gray-600 font-semibold mt-1">
+                            {order.items?.map((i: any) => `${i.name} x${i.quantity}`).join(', ')}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className={`text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider rounded ${
+                            order.status === 'shipped' || order.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-brand-rust/10 text-brand-rust'
+                          }`}>
+                            {order.status === 'pending' ? 'In Attesa' : order.status === 'confirmed' ? 'Confermato' : order.status === 'processing' ? 'In Lavorazione' : order.status === 'shipped' ? 'Spedito' : 'Consegnato'}
+                          </span>
+                          <span className="text-sm font-bold text-deep-black font-display">{order.total} €</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-16 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 opacity-30"><path d="M16 16h6"/><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16"/></svg>
+                    <p className="text-xs font-bold uppercase tracking-widest">Nessun ordine effettuato al momento.</p>
+                    <Link href="/"><ButtonCustom className="mt-6" size="sm">Inizia a fare shopping</ButtonCustom></Link>
+                  </div>
+                )}
               </div>
             )}
 
