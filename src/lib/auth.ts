@@ -60,17 +60,6 @@ export const users: User[] = [
   },
   {
     id: 'admin-4',
-    email: 'admin@sauilmoro.it',
-    password: 'admin123',
-    name: 'Sau',
-    surname: 'Il Moro',
-    phone: '+39 333 1234567',
-    role: 'admin',
-    addresses: [],
-    createdAt: '2024-01-01',
-  },
-  {
-    id: 'admin-5',
     email: 'foodviralstudio@gmail.com',
     password: 'admin123',
     name: 'Food Viral',
@@ -81,7 +70,7 @@ export const users: User[] = [
     createdAt: '2024-01-01',
   },
   {
-    id: 'admin-6',
+    id: 'admin-5',
     email: 'hamzaqssabtai@gmail.com',
     password: 'admin123',
     name: 'Hamza',
@@ -118,9 +107,6 @@ const ADMIN_EMAILS = new Set([
   'admin@sauilmoro.com',
   'info@sauilmoro.com',
   'ordini@sauilmoro.com',
-  'admin@sauilmoro.it',
-  'info@sauilmoro.it',
-  'ordini@sauilmoro.it',
   'foodviralstudio@gmail.com',
   'hamzaqssabtai@gmail.com',
 ]);
