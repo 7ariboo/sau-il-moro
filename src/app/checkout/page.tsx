@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const { items, subtotal } = useCart();
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [error, setError] = useState('');
 
   // Shipping Form Data
@@ -69,6 +70,12 @@ export default function CheckoutPage() {
     e.preventDefault();
     setIsProcessing(true);
     setError('');
+
+    if (!isAgeVerified) {
+      setError('È necessario confermare di essere maggiorenni (18+) e la destinazione d\'uso per completare l\'acquisto.');
+      setIsProcessing(false);
+      return;
+    }
 
     if (requestInvoice) {
       if (invoiceType === 'private' && !invoiceData.codiceFiscale.trim()) {
@@ -417,6 +424,26 @@ export default function CheckoutPage() {
                   <span className="font-display text-base uppercase">Totale Ordine:</span>
                   <span className="text-2xl font-display text-brand-rust font-bold">{total} €</span>
                 </div>
+              </div>
+
+              {/* Age Verification & Legal Compliance (18+ & Usage) */}
+              <div className="bg-amber-50/70 border border-amber-200/90 p-4 rounded-sm space-y-2.5">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="ageVerification"
+                    checked={isAgeVerified}
+                    onChange={(e) => setIsAgeVerified(e.target.checked)}
+                    required
+                    className="mt-0.5 accent-brand-rust w-4 h-4 cursor-pointer shrink-0"
+                  />
+                  <label htmlFor="ageVerification" className="text-xs font-bold text-deep-black cursor-pointer leading-snug">
+                    Dichiaro di essere maggiorenne (18+ anni) e che l&apos;acquisto è destinato ad uso domestico, collezionistico o professionale consentito (Art. 4 L. 110/1975). *
+                  </label>
+                </div>
+                <p className="text-[10px] text-gray-500 font-semibold leading-relaxed pl-7">
+                  ⚖️ <strong>Trasparenza &amp; Sicurezza:</strong> In conformità alla normativa italiana ed europea, la vendita di coltelli ed utensili da taglio è riservata esclusivamente a soggetti maggiorenni.
+                </p>
               </div>
 
               {error && (

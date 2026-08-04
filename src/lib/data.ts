@@ -72,6 +72,7 @@ export const PRODUCTS: Product[] = [
     name: 'Arburesa',
     slug: 'arburesa',
     price: 120,
+    compareAtPrice: 150,
     description: 'Essenziale, robusta e senza fronzoli. L\'Arburesa nasce dalla tradizione dei pastori sardi, pensata per chi ha bisogno di un coltello affidabile in ogni situazione.\n\nUna linea pulita, una lama affilata e un\'impugnatura che trasmette subito solidità. È uno di quei coltelli che non stanno in vetrina: stanno in tasca, pronti a fare il loro lavoro.\n\nChe tu sia davanti alla brace, in campagna o semplicemente ami gli oggetti fatti come una volta, l\'Arburesa è un pezzo di Sardegna da portare sempre con te.',
     shortDescription: 'La tradizione sarda da portare sempre con te.',
     images: [
@@ -102,6 +103,7 @@ export const PRODUCTS: Product[] = [
     name: 'Pattadese',
     slug: 'pattadese',
     price: 150,
+    compareAtPrice: 190,
     description: 'Tra i coltelli più iconici della Sardegna, la Pattadese è riconoscibile al primo sguardo grazie alla sua lama sottile e slanciata.\n\nUnisce precisione, leggerezza ed eleganza, mantenendo tutto il carattere della coltelleria artigianale sarda. È il coltello perfetto per chi apprezza la tradizione, ma pretende anche praticità e qualità.\n\nUn classico senza tempo, costruito per durare e accompagnarti ovunque.',
     shortDescription: 'L\'eleganza della tradizione sarda.',
     images: [
@@ -110,6 +112,7 @@ export const PRODUCTS: Product[] = [
       '/images/3/DSC09924.jpg',
       '/images/3/DSC09951.jpg',
       '/images/3/DSC09952.jpg',
+      '/images/3/DSC09953.jpg',
       '/images/3/DSC09954.jpg',
       '/images/3/DSC09955.jpg',
       '/images/3/DSC09956.jpg',
@@ -133,6 +136,7 @@ export const PRODUCTS: Product[] = [
     name: 'Galluresa',
     slug: 'galluresa',
     price: 130,
+    compareAtPrice: 165,
     description: 'Compatta, resistente e pronta all\'uso. La Galluresa rappresenta la tradizione del nord della Sardegna, con un design deciso e una presa sicura.\n\nÈ il coltello ideale per chi cerca affidabilità, semplicità e uno stile che racconta una terra fatta di granito, vento e fuoco.\n\nNon è solo un coltello: è un pezzo di Sardegna che puoi tenere sempre con te.',
     shortDescription: 'Carattere forte, anima sarda.',
     images: [
@@ -165,6 +169,7 @@ export const PRODUCTS: Product[] = [
     name: 'Coltello Salvezza',
     slug: 'coltello-salvezza',
     price: 24,
+    compareAtPrice: 35,
     description: 'Da una semplice scheda… a un vero coltello.\n\nIl Coltello Salvezza è pensato per chi vuole avere una lama sempre a disposizione senza occupare spazio. Chiuso ha le dimensioni di una normale carta da portafoglio; in pochi secondi si trasforma in un pratico coltello pieghevole.\n\nPerfetto da tenere nel portafoglio, nello zaino, in auto o nell\'attrezzatura da outdoor.\n\nCompatto, leggero e sorprendentemente funzionale, è l\'accessorio ideale per affrontare le piccole situazioni quotidiane in cui avere una lama può fare la differenza.\n\nPerché le cose migliori sono quelle che hai con te quando servono.',
     shortDescription: 'Sempre con te, quando serve davvero.',
     images: [

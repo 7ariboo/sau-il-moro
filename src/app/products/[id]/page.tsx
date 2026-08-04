@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
@@ -9,6 +9,72 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { getProductById, getProductsByCategory, getCategoryBySlug } from '@/lib/data';
 import { JsonLd, getProductJsonLd } from '@/components/JsonLd';
+
+function getEstimatedDeliveryDate(): string {
+  const today = new Date();
+  let daysAdded = 0;
+  let deliveryDate = new Date(today);
+  
+  while (daysAdded < 3) {
+    deliveryDate.setDate(deliveryDate.getDate() + 1);
+    const day = deliveryDate.getDay();
+    if (day !== 0 && day !== 6) daysAdded++;
+  }
+
+  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' };
+  return deliveryDate.toLocaleDateString('it-IT', options);
+}
+
+function BundleCountdown() {
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(23, 59, 59, 999);
+      const diff = Math.max(0, midnight.getTime() - now.getTime());
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft({ hours, minutes, seconds });
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const pad = (n: number) => n.toString().padStart(2, '0');
+
+  return (
+    <div className="bg-gradient-to-r from-brand-rust/10 via-amber-500/10 to-brand-rust/10 border border-brand-rust/30 p-4 rounded-sm space-y-2 mt-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-brand-rust flex items-center gap-1.5">
+          <span>⚡</span> Offerta speciale bundle (-15%)
+        </span>
+        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+          Risparmi 64€ • Scade a mezzanotte
+        </span>
+      </div>
+      <div className="flex items-center gap-2 pt-1">
+        <div className="bg-deep-black text-white font-mono font-bold text-xs px-2.5 py-1 rounded">
+          {pad(timeLeft.hours)}h
+        </div>
+        <span className="font-bold text-deep-black text-xs">:</span>
+        <div className="bg-deep-black text-white font-mono font-bold text-xs px-2.5 py-1 rounded">
+          {pad(timeLeft.minutes)}m
+        </div>
+        <span className="font-bold text-deep-black text-xs">:</span>
+        <div className="bg-brand-rust text-white font-mono font-bold text-xs px-2.5 py-1 rounded animate-pulse">
+          {pad(timeLeft.seconds)}s
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ProductPage() {
   const params = useParams();
@@ -183,12 +249,36 @@ export default function ProductPage() {
                 Collezione {category?.name || product.category}
               </span>
               <h1 className="text-3xl md:text-5xl font-display mb-4">{product.name}</h1>
-              <div className="flex items-center gap-4">
-                <p className="text-3xl font-display text-brand-rust">{product.price} €</p>
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+                <p className="text-3xl md:text-4xl font-display font-bold text-brand-rust">{product.price} €</p>
                 {product.compareAtPrice && (
-                  <p className="text-xl font-display text-deep-black/30 line-through">{product.compareAtPrice} €</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Valore artigianale stimato:</span>
+                    <span className="text-lg font-display text-deep-black/40 line-through decoration-brand-rust/50 decoration-2">{product.compareAtPrice} €</span>
+                    <span className="bg-brand-rust/10 text-brand-rust text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest rounded-xs">
+                      Risparmi {product.compareAtPrice - product.price} €
+                    </span>
+                  </div>
                 )}
               </div>
+
+              {/* High Urgency Stock Badge next to Price */}
+              {product.inStock && product.stockQuantity <= 5 && (
+                <div className="mt-3 inline-flex items-center gap-2 bg-amber-50 border border-amber-300/80 text-amber-900 px-3.5 py-1.5 rounded-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    🔥 Solo {product.stockQuantity} pezzi disponibili in laboratorio!
+                  </span>
+                </div>
+              )}
+
+              {/* Bundle Countdown Timer */}
+              {(product.id === '5' || product.tags.includes('bundle')) && (
+                <BundleCountdown />
+              )}
             </div>
 
             <div className="mb-10 space-y-6">
@@ -233,6 +323,50 @@ export default function ProductPage() {
                   </span>
                 </div>
               )}
+            </div>
+
+            {/* Trust Badges - Posizionati subito sopra i pulsanti d'acquisto */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 p-4 bg-white/70 border border-gray-200/80 rounded-sm backdrop-blur-sm">
+              {/* Badge 1: Tempi di Consegna Stimati */}
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0 mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="13" x="1" y="6" rx="2"/><path d="M16 8h4l3 3v6h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-deep-black leading-tight">
+                    Ricevilo entro il <span className="text-brand-rust font-extrabold">{getEstimatedDeliveryDate()}</span>
+                  </p>
+                  <p className="text-[10px] text-gray-500 font-semibold mt-0.5">Consegna Espressa 2-4 Giorni</p>
+                </div>
+              </div>
+
+              {/* Badge 2: Reso 14 Giorni / Soddisfatti o Rimborsati */}
+              <div className="flex items-start gap-3 border-t sm:border-t-0 sm:border-l border-gray-200 pt-3 sm:pt-0 sm:pl-3">
+                <div className="w-8 h-8 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0 mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </div>
+                <div>
+                  <Link href="/terms#recesso" className="group">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-deep-black leading-tight group-hover:text-brand-rust transition-colors">
+                      Reso Facile 14 Giorni
+                    </p>
+                    <p className="text-[10px] text-gray-500 font-semibold mt-0.5">Soddisfatti o Rimborsati</p>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Badge 3: Pagamento Sicuro Stripe */}
+              <div className="flex items-start gap-3 border-t sm:border-t-0 sm:border-l border-gray-200 pt-3 sm:pt-0 sm:pl-3">
+                <div className="w-8 h-8 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0 mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-deep-black leading-tight">
+                    Pagamento Sicuro
+                  </p>
+                  <p className="text-[10px] text-gray-500 font-semibold mt-0.5">Stripe, Carte &amp; Pay</p>
+                </div>
+              </div>
             </div>
 
             {/* Actions */}
