@@ -37,6 +37,12 @@ export default function CheckoutPage() {
     sdiOrPec: '',
   });
 
+  // Discount Code State
+  const [discountInput, setDiscountInput] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; type: 'percentage' | 'fixed'; value: number; minSubtotal?: number } | null>(null);
+  const [discountError, setDiscountError] = useState('');
+  const [isCheckingDiscount, setIsCheckingDiscount] = useState(false);
+
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -52,8 +58,52 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
-  const shippingCost = subtotal >= 150 ? 0 : 15;
-  const total = subtotal + shippingCost;
+  const handleApplyDiscount = async () => {
+    if (!discountInput.trim()) return;
+    setIsCheckingDiscount(true);
+    setDiscountError('');
+    try {
+      const res = await fetch('/api/discounts');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        const found = data.data.find((d: any) => d.code.toUpperCase() === discountInput.trim().toUpperCase());
+        if (!found) {
+          setDiscountError('Codice promozionale non valido.');
+        } else if (found.minSubtotal && subtotal < found.minSubtotal) {
+          setDiscountError(`Questo codice richiede una spesa minima di ${found.minSubtotal} €.`);
+        } else {
+          setAppliedDiscount(found);
+          setDiscountError('');
+        }
+      } else {
+        setDiscountError('Impossibile verificare il codice promozionale.');
+      }
+    } catch {
+      setDiscountError('Errore durante la verifica del codice.');
+    } finally {
+      setIsCheckingDiscount(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    setAppliedDiscount(null);
+    setDiscountInput('');
+    setDiscountError('');
+  };
+
+  // Total calculation with discount
+  let discountAmount = 0;
+  if (appliedDiscount) {
+    if (appliedDiscount.type === 'percentage') {
+      discountAmount = Math.round((subtotal * appliedDiscount.value) / 100);
+    } else {
+      discountAmount = Math.min(subtotal, appliedDiscount.value);
+    }
+  }
+
+  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
+  const shippingCost = subtotalAfterDiscount >= 150 ? 0 : 15;
+  const total = subtotalAfterDiscount + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -112,6 +162,10 @@ export default function CheckoutPage() {
           invoice: requestInvoice ? {
             type: invoiceType,
             ...invoiceData
+          } : null,
+          discount: appliedDiscount ? {
+            code: appliedDiscount.code,
+            amount: discountAmount,
           } : null,
         }),
       });
@@ -411,11 +465,51 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Discount Code Input Box */}
+              <div className="space-y-2 pt-4 border-t border-gray-100">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block">Codice Sconto / Promo</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Es. SAUMORO10"
+                    value={discountInput}
+                    onChange={(e) => {
+                      setDiscountInput(e.target.value.toUpperCase());
+                      setDiscountError('');
+                    }}
+                    className="flex-1 bg-white border border-gray-200 px-3 py-2.5 text-xs font-mono font-bold uppercase focus:outline-none focus:border-brand-rust"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyDiscount}
+                    disabled={isCheckingDiscount}
+                    className="bg-deep-black text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-brand-rust transition-colors shrink-0 disabled:opacity-50"
+                  >
+                    {isCheckingDiscount ? '...' : 'Applica'}
+                  </button>
+                </div>
+                {discountError && (
+                  <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider">{discountError}</p>
+                )}
+                {appliedDiscount && (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 p-2.5 text-xs text-green-800 font-bold uppercase tracking-wider rounded-sm mt-2">
+                    <span>✓ Codice {appliedDiscount.code} applicato (-{discountAmount} €)</span>
+                    <button type="button" onClick={handleRemoveDiscount} className="text-red-600 hover:underline text-[10px]">Rimuovi</button>
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-3 pt-4 border-t border-gray-100 text-xs">
                 <div className="flex justify-between font-bold">
                   <span className="text-gray-500 uppercase">Subtotale Articoli:</span>
                   <span>{subtotal} €</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between font-bold text-brand-rust">
+                    <span className="uppercase">Sconto Applicato ({appliedDiscount?.code}):</span>
+                    <span>-{discountAmount} €</span>
+                  </div>
+                )}
                 <div className="flex justify-between font-bold">
                   <span className="text-gray-500 uppercase">Spedizione Corrente:</span>
                   <span>{shippingCost === 0 ? <span className="text-green-600 uppercase">Gratuita</span> : `${shippingCost} €`}</span>

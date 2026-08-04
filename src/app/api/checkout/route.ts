@@ -5,7 +5,7 @@ import { PRODUCTS } from '@/lib/data';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { items, customer, shipping } = body;
+    const { items, customer, shipping, discount } = body;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ success: false, error: 'Il carrello è vuoto' }, { status: 400 });
@@ -39,15 +39,18 @@ export async function POST(request: Request) {
       return acc + (product ? product.price * item.quantity : 0);
     }, 0);
 
+    const discountAmount = discount?.amount || 0;
+    const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
+
     const shippingOptions = [
       {
         shipping_rate_data: {
           type: 'fixed_amount' as const,
           fixed_amount: {
-            amount: subtotal >= 150 ? 0 : 1500, // €15 or €0 in cents
+            amount: subtotalAfterDiscount >= 150 ? 0 : 1500, // €15 or €0 in cents
             currency: 'eur',
           },
-          display_name: subtotal >= 150 ? 'Spedizione Gratuita' : 'Spedizione Standard',
+          display_name: subtotalAfterDiscount >= 150 ? 'Spedizione Gratuita' : 'Spedizione Standard',
           delivery_estimate: {
             minimum: { unit: 'business_day' as const, value: 2 },
             maximum: { unit: 'business_day' as const, value: 4 },
@@ -56,6 +59,17 @@ export async function POST(request: Request) {
       },
     ];
 
+    let discountsArray: any[] = [];
+    if (discountAmount > 0) {
+      const coupon = await stripe.coupons.create({
+        amount_off: Math.round(discountAmount * 100),
+        currency: 'eur',
+        name: `Sconto ${discount?.code || 'PROMO'}`,
+        duration: 'once',
+      });
+      discountsArray = [{ coupon: coupon.id }];
+    }
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -63,6 +77,7 @@ export async function POST(request: Request) {
       mode: 'payment',
       customer_email: customer?.email,
       shipping_options: shippingOptions,
+      discounts: discountsArray.length > 0 ? discountsArray : undefined,
       success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/checkout/cancel`,
       metadata: {
@@ -72,6 +87,8 @@ export async function POST(request: Request) {
         shippingAddress: shipping?.address || '',
         shippingCity: shipping?.city || '',
         shippingZip: shipping?.zip || '',
+        discountCode: discount?.code || '',
+        discountAmount: discountAmount.toString(),
         itemsJson: JSON.stringify(items),
       },
     });
