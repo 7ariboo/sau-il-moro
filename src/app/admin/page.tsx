@@ -106,13 +106,13 @@ function Dashboard({
     fetch('/api/settings').then(r => r.json()).then(d => d.success && setSettings(d.data));
     fetch('/api/users').then(r => r.json()).then(d => d.success && setUsersList(d.data));
     fetch('/api/newsletter').then(r => r.json()).then(d => d.success && setNewsletterList(d.data));
-    fetch('/api/analytics').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
+    fetch('/api/analytics/firestore').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
   }, [refreshKey]);
 
   // Poll analytics every 30 seconds for live updates
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch('/api/analytics').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
+      fetch('/api/analytics/firestore').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
     }, 30000);
     return () => clearInterval(interval);
   }, []);

@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { JsonLd, getOrganizationJsonLd, getWebSiteJsonLd } from "@/components/JsonLd";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { HotjarScript } from "@/components/HotjarScript";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const natronDisplay = localFont({
   src: "../../public/fonts/NATRONRough-Bold.otf",
@@ -99,6 +100,7 @@ export default function RootLayout({
       <head>
         <JsonLd data={getOrganizationJsonLd()} />
         <JsonLd data={getWebSiteJsonLd()} />
+        <GoogleAnalytics />
       </head>
       <body className={`${natronDisplay.variable} ${natronSans.variable} font-sans antialiased text-deep-black bg-stone-texture min-h-screen flex flex-col justify-between`}>
         <AuthProvider>
