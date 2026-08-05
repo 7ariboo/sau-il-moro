@@ -379,10 +379,10 @@ function Dashboard({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              <KpiCard label="Fatturato" value={`${totalRevenue} €`} change="+12.5%" color="text-green-400" />
-              <KpiCard label="Ordini" value={`${orders.length}`} change={orders.length > 0 ? '+1 oggi' : 'Nessuno'} color="text-brand-rust" />
+              <KpiCard label="Fatturato" value={`${totalRevenue} €`} change={orders.length > 0 ? `da ${orders.length} ordini` : 'Nessun ordine'} color="text-green-400" />
+              <KpiCard label="Ordini" value={`${orders.length}`} change={orders.filter(o => new Date(o.createdAt).toDateString() === new Date().toDateString()).length > 0 ? `${orders.filter(o => new Date(o.createdAt).toDateString() === new Date().toDateString()).length} oggi` : 'Nessuno oggi'} color="text-brand-rust" />
               <KpiCard label="Prodotti" value={`${products.length}`} change={`${totalStock} in stock`} color="text-blue-400" />
-              <KpiCard label="Visitatori Oggi" value={analytics ? `${analytics.todayUniqueVisitors}` : '—'} change={analytics ? `${analytics.todayViews} visite` : '...'} color="text-purple-400" />
+              <KpiCard label="Visitatori Oggi" value={analytics ? `${analytics.todayUniqueVisitors}` : '—'} change={analytics ? `${analytics.todayViews} visite totali` : '...'} color="text-purple-400" />
             </div>
 
             {/* Live Analytics Section */}
