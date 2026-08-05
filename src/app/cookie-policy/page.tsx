@@ -45,6 +45,13 @@ export default function CookiePolicyPage() {
                 </p>
               </div>
 
+              <div className="p-4 bg-gray-50 border-l-4 border-amber-500">
+                <h3 className="font-bold text-deep-black uppercase text-xs tracking-wider mb-1">B.1) Contentsquare — Heatmap e Registrazioni Sessione</h3>
+                <p className="text-xs text-gray-600">
+                  Utilizziamo <strong>Contentsquare</strong> (ex Hotjar) per analizzare il comportamento degli utenti sul sito attraverso <strong>heatmap</strong> (mappe di calore), <strong>registrazioni delle sessioni di navigazione</strong> e <strong>analisi dei funnel di conversione</strong>. Questi strumenti ci permettono di comprendere come gli utenti interagiscono con le pagine (click, scroll, movimenti del mouse) per migliorare l&apos;esperienza d&apos;acquisto. I dati raccolti sono anonimi e non contengono informazioni personali identificabili. Contentsquare opera in conformità al GDPR. Per maggiori informazioni: <a href="https://contentsquare.com/privacy-center/" target="_blank" rel="noopener noreferrer" className="text-brand-rust underline font-bold">Privacy Center Contentsquare</a>.
+                </p>
+              </div>
+
               <div className="p-4 bg-gray-50 border-l-4 border-gray-400">
                 <h3 className="font-bold text-deep-black uppercase text-xs tracking-wider mb-1">C) Cookie di Profilazione e Marketing (Terze Parti)</h3>
                 <p className="text-xs text-gray-600">

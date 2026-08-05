@@ -122,7 +122,7 @@ export const CookieBanner: React.FC = () => {
                     className="accent-brand-rust cursor-pointer w-4 h-4"
                   />
                 </div>
-                <p className="text-gray-400 text-[11px]">Ci aiutano a comprendere l&apos;uso del sito in forma aggregata ed anonima.</p>
+                <p className="text-gray-400 text-[11px]">Ci aiutano a comprendere l&apos;uso del sito in forma aggregata e anonima. Include Contentsquare per heatmap e registrazioni sessione.</p>
               </div>
 
               <div className="p-3 bg-white/5 border border-white/10 rounded-sm space-y-1">
