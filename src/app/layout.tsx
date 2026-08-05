@@ -7,6 +7,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import { CookieBanner } from "@/components/CookieBanner";
 import { Footer } from "@/components/Footer";
 import { JsonLd, getOrganizationJsonLd, getWebSiteJsonLd } from "@/components/JsonLd";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
+import { HotjarScript } from "@/components/HotjarScript";
 
 const natronDisplay = localFont({
   src: "../../public/fonts/NATRONRough-Bold.otf",
@@ -107,6 +109,8 @@ export default function RootLayout({
               </div>
               <Footer />
               <CookieBanner />
+              <AnalyticsTracker />
+              <HotjarScript />
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

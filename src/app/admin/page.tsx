@@ -97,6 +97,8 @@ function Dashboard({
   const [search, setSearch] = useState('');
   const { logout } = useAuth();
 
+  const [analytics, setAnalytics] = useState<any>(null);
+
   useEffect(() => {
     fetch('/api/products?limit=100').then(r => r.json()).then(d => d.success && setProducts(d.data));
     fetch('/api/orders').then(r => r.json()).then(d => d.success && setOrders(d.data));
@@ -104,7 +106,16 @@ function Dashboard({
     fetch('/api/settings').then(r => r.json()).then(d => d.success && setSettings(d.data));
     fetch('/api/users').then(r => r.json()).then(d => d.success && setUsersList(d.data));
     fetch('/api/newsletter').then(r => r.json()).then(d => d.success && setNewsletterList(d.data));
+    fetch('/api/analytics').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
   }, [refreshKey]);
+
+  // Poll analytics every 30 seconds for live updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch('/api/analytics').then(r => r.json()).then(d => d.success && setAnalytics(d.data));
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Sei sicuro di voler eliminare questo prodotto?')) return;
@@ -348,17 +359,82 @@ function Dashboard({
         {/* Overview */}
         {tab === 'overview' && (
           <div className="space-y-8 animate-fade-in">
-            <div>
-              <h1 className="text-3xl font-display text-white uppercase">Dashboard</h1>
-              <p className="text-white/30 text-xs uppercase tracking-widest mt-1">Panoramica generale</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-display text-white uppercase">Dashboard</h1>
+                <p className="text-white/30 text-xs uppercase tracking-widest mt-1">Panoramica generale</p>
+              </div>
+              {analytics && (
+                <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2.5">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+                  </span>
+                  <div>
+                    <p className="text-green-400 text-sm font-bold">{analytics.activeVisitors} {analytics.activeVisitors === 1 ? 'visitatore' : 'visitatori'} online</p>
+                    <p className="text-green-400/50 text-[9px] uppercase tracking-widest">Ultimi 5 minuti • Aggiornamento live</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               <KpiCard label="Fatturato" value={`${totalRevenue} €`} change="+12.5%" color="text-green-400" />
               <KpiCard label="Ordini" value={`${orders.length}`} change={orders.length > 0 ? '+1 oggi' : 'Nessuno'} color="text-brand-rust" />
               <KpiCard label="Prodotti" value={`${products.length}`} change={`${totalStock} in stock`} color="text-blue-400" />
-              <KpiCard label="Conversione" value="3.2%" change="+0.4%" color="text-purple-400" />
+              <KpiCard label="Visitatori Oggi" value={analytics ? `${analytics.todayUniqueVisitors}` : '—'} change={analytics ? `${analytics.todayViews} visite` : '...'} color="text-purple-400" />
             </div>
+
+            {/* Live Analytics Section */}
+            {analytics && (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* 7-Day Chart */}
+                <div className="bg-[#161616] border border-white/5 rounded-xl p-6">
+                  <h2 className="text-white font-display uppercase tracking-wider mb-6">Traffico Ultimi 7 Giorni</h2>
+                  <div className="space-y-3">
+                    {analytics.last7Days?.map((day: any, i: number) => {
+                      const maxViews = Math.max(...analytics.last7Days.map((d: any) => d.views), 1);
+                      const barWidth = Math.max(4, (day.views / maxViews) * 100);
+                      return (
+                        <div key={i} className="flex items-center gap-4">
+                          <span className="text-white/40 text-[10px] font-bold uppercase tracking-wider w-24 shrink-0">{day.date}</span>
+                          <div className="flex-1 h-6 bg-white/5 rounded-sm overflow-hidden relative">
+                            <div
+                              className="h-full bg-gradient-to-r from-brand-rust to-brand-rust/60 rounded-sm transition-all duration-500"
+                              style={{ width: `${barWidth}%` }}
+                            />
+                          </div>
+                          <div className="text-right shrink-0 w-20">
+                            <span className="text-white text-xs font-bold">{day.views}</span>
+                            <span className="text-white/30 text-[10px] ml-1">({day.visitors} unici)</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Top Pages */}
+                <div className="bg-[#161616] border border-white/5 rounded-xl p-6">
+                  <h2 className="text-white font-display uppercase tracking-wider mb-6">Pagine Più Visitate Oggi</h2>
+                  {analytics.topPages?.length === 0 ? (
+                    <p className="text-white/20 text-center py-12 text-xs uppercase tracking-widest">Nessuna visita registrata oggi</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {analytics.topPages?.map((page: any, i: number) => (
+                        <div key={i} className="flex items-center justify-between bg-white/5 rounded-lg px-4 py-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="text-brand-rust/60 text-xs font-bold w-5 shrink-0">#{i + 1}</span>
+                            <span className="text-white text-xs font-mono truncate">{page.path}</span>
+                          </div>
+                          <span className="text-white/60 text-xs font-bold shrink-0 ml-4">{page.count} visite</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="bg-[#161616] border border-white/5 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
