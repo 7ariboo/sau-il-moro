@@ -101,6 +101,7 @@ export default function RootLayout({
         <JsonLd data={getOrganizationJsonLd()} />
         <JsonLd data={getWebSiteJsonLd()} />
         <GoogleAnalytics />
+        <HotjarScript />
       </head>
       <body className={`${natronDisplay.variable} ${natronSans.variable} font-sans antialiased text-deep-black bg-stone-texture min-h-screen flex flex-col justify-between`}>
         <AuthProvider>
@@ -112,7 +113,6 @@ export default function RootLayout({
               <Footer />
               <CookieBanner />
               <AnalyticsTracker />
-              <HotjarScript />
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
