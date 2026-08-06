@@ -369,6 +369,16 @@ export default function ProductPage() {
               </div>
             </div>
 
+            {/* Prominent Legal Age Badge (18+) */}
+            <div className="flex items-center gap-2.5 bg-amber-50/90 border border-amber-300/80 p-2.5 rounded-sm mb-4">
+              <span className="bg-red-700 text-white text-[10px] font-mono font-extrabold px-2 py-0.5 rounded tracking-wider uppercase shrink-0">
+                🔞 18+ ANNI
+              </span>
+              <p className="text-[11px] font-bold text-deep-black/80 leading-tight">
+                Vendita riservata esclusivamente a soggetti maggiorenni (Art. 4 L. 110/1975).
+              </p>
+            </div>
+
             {/* Actions */}
             <div className="space-y-4">
               {/* Primary Fast Action: ACQUISTA ORA */}

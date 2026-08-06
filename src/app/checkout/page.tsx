@@ -520,24 +520,41 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Age Verification & Legal Compliance (18+ & Usage) */}
-              <div className="bg-amber-50/70 border border-amber-200/90 p-4 rounded-sm space-y-2.5">
+              {/* High-Visibility 18+ Age Verification & Legal Compliance (Art. 4 L. 110/1975 & Art. 704 C.P.) */}
+              <div className={`p-4 rounded border-2 transition-all duration-200 ${
+                !isAgeVerified && error.includes('maggiorenni') 
+                  ? 'bg-red-100 border-red-600 shadow-md' 
+                  : 'bg-gradient-to-br from-amber-50 via-red-50/40 to-amber-50 border-amber-400/90 shadow-sm'
+              }`}>
+                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-amber-200/80">
+                  <span className="bg-red-700 text-white text-xs font-mono font-extrabold px-2 py-0.5 rounded tracking-wider uppercase flex items-center gap-1 shrink-0">
+                    <span>🔞</span> 18+ ANNI
+                  </span>
+                  <span className="text-xs font-bold text-deep-black uppercase tracking-wider">
+                    Conferma Legale Obbligatoria
+                  </span>
+                </div>
+
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     id="ageVerification"
                     checked={isAgeVerified}
-                    onChange={(e) => setIsAgeVerified(e.target.checked)}
+                    onChange={(e) => {
+                      setIsAgeVerified(e.target.checked);
+                      if (e.target.checked && error.includes('maggiorenni')) setError('');
+                    }}
                     required
-                    className="mt-0.5 accent-brand-rust w-4 h-4 cursor-pointer shrink-0"
+                    className="mt-0.5 accent-red-700 w-5 h-5 cursor-pointer shrink-0 rounded"
                   />
                   <label htmlFor="ageVerification" className="text-xs font-bold text-deep-black cursor-pointer leading-snug">
-                    Dichiaro di essere maggiorenne (18+ anni) e che l&apos;acquisto è destinato ad uso domestico, collezionistico o professionale consentito (Art. 4 L. 110/1975). *
+                    Dichiaro sotto la mia responsabilità di essere maggiorenne (18+ anni) e che l&apos;acquisto è destinato esclusivamente ad uso domestico, collezionistico, espositivo o professionale consentito dalla legge (Art. 4 L. 110/1975 e Art. 704 C.P.). *
                   </label>
                 </div>
-                <p className="text-[10px] text-gray-500 font-semibold leading-relaxed pl-7">
-                  ⚖️ <strong>Trasparenza &amp; Sicurezza:</strong> In conformità alla normativa italiana ed europea, la vendita di coltelli ed utensili da taglio è riservata esclusivamente a soggetti maggiorenni.
-                </p>
+
+                <div className="mt-3 pl-8 text-[11px] text-gray-600 font-medium leading-relaxed bg-white/60 p-2.5 rounded border border-amber-200/50">
+                  ⚖️ <strong>Avviso Normativo:</strong> In Italia la vendita di utensili ed strumenti da taglio è vietata ai minori di 18 anni. La spunta di questa casella costituisce dichiarazione sostitutiva di atto di notorietà.
+                </div>
               </div>
 
               {error && (
