@@ -6,7 +6,7 @@ export const CATEGORIES: Category[] = [
     slug: 'ferro',
     name: 'FERRO',
     description: 'L\'arte della forgia sarda. Coltelli fatti a mano, lame forgiate e oggetti in ferro battuto.',
-    image: '/images/Sfondo/coltello.png',
+    image: '/images/5/DSC09969.jpg',
   },
   {
     id: 'cat-2',
