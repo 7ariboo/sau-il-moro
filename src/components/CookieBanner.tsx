@@ -53,15 +53,23 @@ export const CookieBanner: React.FC = () => {
         {!showPreferences ? (
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-3xl">
+              <div className="flex items-center gap-2">
+                <span className="bg-red-700 text-white text-[10px] font-mono font-extrabold px-2 py-0.5 rounded tracking-wider uppercase inline-flex items-center gap-1 shrink-0">
+                  <span>🔞</span> 18+ VENDITA RISERVATA AI MAGGIORENNI
+                </span>
+                <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider hidden sm:inline-block">
+                  • Art. 4 L. 110/1975
+                </span>
+              </div>
               <h4 className="text-sm font-display font-bold uppercase tracking-wider text-brand-rust">
-                Informativa Cookie &amp; Privacy (GDPR)
+                Informativa Cookie, Privacy &amp; Età (GDPR)
               </h4>
               <p className="text-xs text-gray-300 leading-relaxed">
-                Utilizziamo cookie tecnici essenziali per il funzionamento dello store e, previo tuo consenso, cookie analitici e di marketing per migliorare l&apos;esperienza d&apos;acquisto. Consulta la nostra{' '}
+                Accedendo al sito e proseguendo la navigazione dichiari di essere <strong>maggiorenne (18+ anni)</strong> (la vendita di utensili ed oggetti da taglio è vietata ai minori). Utilizziamo cookie tecnici essenziali e, previo tuo consenso, cookie analitici e di profilazione per migliorare l&apos;esperienza d&apos;acquisto. Consulta la{' '}
                 <Link href="/privacy" className="underline hover:text-brand-rust text-white font-semibold">
                   Privacy Policy
                 </Link>{' '}
-                e la nostra{' '}
+                e la{' '}
                 <Link href="/cookie-policy" className="underline hover:text-brand-rust text-white font-semibold">
                   Cookie Policy
                 </Link>.
