@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
-import { orders, generateOrderId, PRODUCTS } from '@/lib/data';
+import { PRODUCTS } from '@/lib/data';
 import { Order } from '@/lib/types';
 import { sendOrderConfirmationEmail, sendOrderStatusEmail } from '@/lib/email';
+import { getAllOrders, saveOrder, updateOrderStatus, generateOrderId } from '@/lib/orders-db';
 
 export async function GET() {
-  return NextResponse.json({ success: true, data: orders });
+  try {
+    const orders = await getAllOrders();
+    return NextResponse.json({ success: true, data: orders });
+  } catch (error: any) {
+    console.error('Orders GET Error:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -39,9 +46,9 @@ export async function POST(request: Request) {
       id: orderId,
       customer: {
         ...customer,
-        address: body.shipping.address,
-        city: body.shipping.city,
-        zip: body.shipping.zip,
+        address: body.shipping?.address || '',
+        city: body.shipping?.city || '',
+        zip: body.shipping?.zip || '',
       },
       items: orderItems,
       subtotal,
@@ -56,7 +63,8 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    orders.unshift(newOrder);
+    // Save to Firestore
+    await saveOrder(newOrder);
 
     // Send confirmation email
     if (customer?.email) {
@@ -83,21 +91,18 @@ export async function PATCH(request: Request) {
     const body = await request.json();
     const { id, status } = body;
 
-    const orderIndex = orders.findIndex(o => o.id === id);
-    if (orderIndex === -1) {
+    const updatedOrder = await updateOrderStatus(id, status);
+    if (!updatedOrder) {
       return NextResponse.json({ success: false, error: 'Ordine non trovato' }, { status: 404 });
     }
 
-    orders[orderIndex].status = status;
-    const targetOrder = orders[orderIndex];
-
     // Send order status update email
-    if (targetOrder.customer?.email) {
-      const customerName = `${targetOrder.customer.name || ''} ${targetOrder.customer.surname || ''}`.trim() || 'Cliente';
-      sendOrderStatusEmail(targetOrder.customer.email, targetOrder.id, customerName, status);
+    if (updatedOrder.customer?.email) {
+      const customerName = `${updatedOrder.customer.name || ''} ${updatedOrder.customer.surname || ''}`.trim() || 'Cliente';
+      sendOrderStatusEmail(updatedOrder.customer.email, updatedOrder.id, customerName, status);
     }
 
-    return NextResponse.json({ success: true, data: targetOrder });
+    return NextResponse.json({ success: true, data: updatedOrder });
   } catch (error) {
     return NextResponse.json({ success: false, error: 'Errore nell\'aggiornamento dell\'ordine' }, { status: 500 });
   }

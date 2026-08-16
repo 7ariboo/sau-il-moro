@@ -564,6 +564,7 @@ function Dashboard({
                   <tr className="border-b border-white/5">
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-6 py-4">Ordine</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Cliente</th>
+                    <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Spedizione</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Pagamento</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Evasione</th>
                     <th className="text-left text-[10px] text-white/30 font-bold uppercase tracking-widest px-4 py-4">Totale</th>
@@ -580,6 +581,11 @@ function Dashboard({
                       <td className="px-4 py-4">
                         <p className="text-white text-xs font-bold">{order.customer.name} {order.customer.surname}</p>
                         <p className="text-white/30 text-[10px]">{order.customer.email}</p>
+                        {order.customer.phone && <p className="text-white/20 text-[10px]">📱 {order.customer.phone}</p>}
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-white text-[11px]">{order.customer.address || '—'}</p>
+                        <p className="text-white/30 text-[10px]">{order.customer.zip} {order.customer.city}</p>
                       </td>
                       <td className="px-4 py-4">
                         <span className={`text-[10px] font-bold px-2 py-1 rounded ${
