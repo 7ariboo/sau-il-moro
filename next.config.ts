@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/category/ferro',
+        destination: '/products/bundle-sau-il-moro',
         permanent: false,
       },
     ];
